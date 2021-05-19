@@ -4,27 +4,23 @@
 #include <set>
 #include <array>
 #include <vector>
+
 #include "base.h"
 
 using namespace std;
 
-struct Abstraction {
-  // 最大主牌的等级
-  Level level = -1;
-  // 连续的长度
-  Level length = 0;
-  // 主牌张数
-  Count size = 0;
-  // 副牌张数
-  Count cosize = 0;
-  vector<Level> attached;
-  Value getValue();
-  Abstraction() {}
-  Abstraction(const Counter &counter);
-};
+using Evaluator = Value (*) (const Hand &);
+using AttackingSelector = Hand (*) (Counter *);
+using DefendingSelector = Hand (*) (Counter *, const Hand &);
 
-unsigned biddingSuggestion(Counter *counter);
-Abstraction defend(Counter *counter, const Abstraction &abstraction);
-Abstraction attack(Counter *counter);
+extern Evaluator evaluator;
+extern vector<AttackingSelector> attacking_sequence;
+extern vector<DefendingSelector> defending_sequence;
+
+Value evaluate(Counter *counter);
+unsigned suggest(Counter *counter);
+inline void update(Value *best_value, Hand *best_hand, const Hand &hand, Counter *counter);
+Hand defend(Counter *counter, const Hand &last_hand);
+Hand attack(Counter *counter);
 
 #endif

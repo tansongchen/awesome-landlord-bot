@@ -12,10 +12,14 @@ TEST_CASE("Card / Level conversion", "[conversion]") {
   Level level2 = redJokerLevel;
   Card card3 = 18; // one of the "7" s
   Level level3 = 4;
-  REQUIRE(cardToLevel(card1) == level1);
-  REQUIRE(cardToLevel(card2) == level2);
-  REQUIRE(cardToLevel(card3) == level3);
-  REQUIRE(levelToCard(level1) == set<Card>{card1});
-  REQUIRE(levelToCard(level2) == set<Card>{card2});
-  REQUIRE(levelToCard(level3) == set<Card>{16, 17, 18, 19});
+  REQUIRE(card_to_level(card1) == level1);
+  REQUIRE(card_to_level(card2) == level2);
+  REQUIRE(card_to_level(card3) == level3);
+}
+
+TEST_CASE("Level combination", "[combination]") {
+  vector<Level> attachables = {3, 4, 8, 10};
+  REQUIRE(combinations(attachables, 0) == vector<set<Level>>{});
+  REQUIRE(combinations(attachables, 1) == vector<set<Level>>{set<Level>{3}, set<Level>{4}, set<Level>{8}, set<Level>{10}});
+  REQUIRE(combinations(attachables, 2) == vector<set<Level>>{set<Level>{3, 4}, set<Level>{3, 8}, set<Level>{4, 8}, set<Level>{3, 10}, set<Level>{4, 10}, set<Level>{8, 10}});
 }

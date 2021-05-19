@@ -3,15 +3,28 @@
 // 作者：谭淞宸 刘上 张可尔
 // 游戏信息：http://www.botzone.org/games#FightThelandlord2
 
+#include "strategy.h"
 #include "environment.h"
+#include "strategy/solo_selector.cpp"
+#include "strategy/pass_selector.cpp"
+#include "strategy/simple_evaluator.cpp"
 
 int main() {
-  Environment environment;
-  if (environment.stage == Stage::BIDDING) {
-    unsigned stake = environment.bid();
-    environment.output(stake);
-  } else if (environment.stage == Stage::PLAYING) {
-    Group group = environment.play();
-    environment.output(group);
+  read();
+  evaluator = simple_evaluator;
+  attacking_sequence = {solo_selector};
+  defending_sequence = {pass_selector};
+  Counter counter(myCards);
+  if (stage == Stage::BIDDING) {
+    int suggestion = suggest(&counter);
+    int bid_value = bidInput.empty() || suggestion > bidInput.back() ? bid_value : 0;
+    bid(bid_value);
+  } else if (stage == Stage::PLAYING) {
+    Counter last_hand_counter(lastValidCombo);
+    Hand last_hand(last_hand_counter);
+    Hand hand = last_hand.size ? defend(&counter, last_hand) : attack(&counter);
+    Counter hand_counter = static_cast<Counter>(hand);
+    Group hand_group = static_cast<Group>(hand_counter);
+    play(hand_group);
   }
 }
