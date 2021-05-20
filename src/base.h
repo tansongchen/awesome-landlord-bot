@@ -29,7 +29,7 @@ using Count = unsigned char;
 struct Counter : public array<Count, maximumLevel> {
   Counter();
   Counter(const Group &group);
-  operator Group();
+  Group get_group(const Group &myCards);
 };
 
 struct Hand {
@@ -43,13 +43,14 @@ struct Hand {
   Count cosize;
   // 副牌内容
   Combination attached;
-  Hand();
-  Hand(Level _level, Level _length = 1, Count _size = 1, Count _cosize = 0);
-  Hand(bool error);
+  Hand(Level _level = 0, Level _length = 1, Count _size = 1, Count _cosize = 0);
   Hand(const Counter &counter);
-  operator Counter();
+  Counter get_counter();
   bool is_not_found();
 };
+
+const Hand pass(-1);
+const Hand not_found(-2);
 
 using Value = char;
 

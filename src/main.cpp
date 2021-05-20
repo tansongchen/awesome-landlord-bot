@@ -23,8 +23,8 @@ int main() {
     Counter last_hand_counter(lastValidCombo);
     Hand last_hand(last_hand_counter);
     Hand hand = last_hand.size ? defend(&counter, last_hand) : attack(&counter);
-    Counter hand_counter = static_cast<Counter>(hand);
-    Group hand_group = static_cast<Group>(hand_counter);
-    play(hand_group);
+    Counter counter(hand.get_counter());
+    Group group(counter.get_group(myCards));
+    play(group);
   }
 }

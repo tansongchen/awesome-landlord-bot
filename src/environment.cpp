@@ -118,16 +118,3 @@ void play(const Group &group) {
   Json::FastWriter writer;
   cout << writer.write(result) << endl;
 }
-
-Counter::operator Group() {
-  Group group;
-  Counter counter(*this);
-  for (const auto card : myCards) {
-    Level l = card_to_level(card);
-    if (counter[l]) {
-      group.insert(card);
-      --counter[l];
-    }
-  }
-  return group;
-}

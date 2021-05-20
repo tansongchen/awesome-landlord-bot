@@ -5,7 +5,7 @@
 Hand full_enumeration_selector(Counter *counter) {
   array<Level, 4> count;
   Value best_value;
-  Hand best_hand, hand;
+  Hand best_hand(not_found), hand;
   auto &level = hand.level, &length = hand.length;
   auto &size = hand.size, &cosize = hand.cosize;
   for (level = 0; level != maximumLevel; ++level) {

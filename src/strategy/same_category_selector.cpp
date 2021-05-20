@@ -5,7 +5,7 @@
 Hand same_category_selector(Counter *counter, const Hand &last_hand) {
   Level count = 0;
   Value best_value;
-  Hand best_hand, hand;
+  Hand best_hand(not_found), hand;
   auto &level = hand.level, &length = hand.length;
   auto &size = hand.size, &cosize = hand.cosize;
   length = last_hand.length;
@@ -29,5 +29,4 @@ Hand same_category_selector(Counter *counter, const Hand &last_hand) {
     }
   }
   return best_hand;
-  return Hand(true);
 }

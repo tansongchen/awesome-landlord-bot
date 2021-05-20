@@ -32,11 +32,20 @@ Counter::Counter(const Group &group) {
   for (const Card &card: group) ++(*this)[card_to_level(card)];
 }
 
-Hand::Hand(): size(0) {}
+Group Counter::get_group(const Group &myCards) {
+  Group group;
+  Counter counter(*this);
+  for (const auto card : myCards) {
+    Level l = card_to_level(card);
+    if (counter[l]) {
+      group.insert(card);
+      --counter[l];
+    }
+  }
+  return group;
+}
 
 Hand::Hand(Level _level, Level _length, Count _size, Count _cosize): level(_level), length(_length), size(_size), cosize(_cosize) {}
-
-Hand::Hand(bool error): size(-1) {}
 
 Hand::Hand(const Counter &counter) {
   auto it1 = max_element(counter.rbegin(), counter.rend());
@@ -47,7 +56,7 @@ Hand::Hand(const Counter &counter) {
   cosize = it2 == counter.rend() ? 0 : *it2;
 }
 
-Hand::operator Counter() {
+Counter Hand::get_counter() {
   Counter counter;
   for (auto l = level; l != level - length; --l) counter[l] = size;
   if (cosize) for (const auto &l : attached) counter[l] = cosize;

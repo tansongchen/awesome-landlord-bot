@@ -2,9 +2,9 @@ name: Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -12,8 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          sudo apt update
-          sudo apt install g++-7
-          cmake ${{github.workspace}} -DCMAKE_CXX_COMPILER=g++-7
+          wget https://github.com/catchorg/Catch2/releases/download/v2.13.6/catch.hpp -O test/catch.hpp
+          wget http://www.botzone.org.cn/static/JsonCPP_modified.zip -O jsoncpp.zip
+          unzip jsoncpp.zip -d src/
+          mkdir build
+          cd build
+          cmake ..
           make test
           ./test
