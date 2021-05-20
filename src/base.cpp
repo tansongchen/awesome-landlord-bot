@@ -26,9 +26,13 @@ vector<Combination> combinations(const vector<Level> &universe, unsigned k) {
   return result;
 }
 
-Counter::Counter() {}
+Counter::Counter(): array<Count, maximumLevel>{} {}
 
-Counter::Counter(const Group &group) {
+Counter::Counter(map<Level, Count> m): array<Count, maximumLevel>{} {
+  for (const auto &item : m) (*this)[item.first] = item.second;
+}
+
+Counter::Counter(const Group &group): array<Count, maximumLevel>{} {
   for (const Card &card: group) ++(*this)[card_to_level(card)];
 }
 

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <set>
+#include <map>
 #include <array>
 
 using namespace std;
@@ -37,6 +38,8 @@ using Count = unsigned char;
 // For every Level, store the amount of Card that have this Level; a subclass of array<Count, maximumLevel>
 struct Counter : public array<Count, maximumLevel> {
   Counter();
+  // Construct a Counter from a initializer_list
+  Counter(map<Level, Count> m);
   // Construct a Counter from a Group
   Counter(const Group &group);
   // Construct a Group from a Counter, and since the Counter does not contain the information of suits, a context myCards is needed
