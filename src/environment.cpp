@@ -1,18 +1,19 @@
 #include <algorithm>
+#include <iostream>
 
 #include "environment.h"
 #include "jsoncpp/json.h"
 
 Stage stage = Stage::BIDDING;
-Group landlordPublicCards;
-vector<Group> whatTheyPlayed[PLAYER_COUNT];
-Group lastValidCombo;
+set<Card> landlordPublicCards;
+vector<vector<Card>> whatTheyPlayed[PLAYER_COUNT];
+set<Card> lastValidCombo;
 short cardRemaining[PLAYER_COUNT] = {17, 17, 17};
 int landlordPosition = -1;
 int landlordBid = -1;
 vector<int> bidInput;
 int myPosition;
-Group myCards;
+set<Card> myCards;
 
 void read() {
   // 读入输入（平台上的输入是单行）
@@ -67,12 +68,12 @@ void read() {
     for (int p = 0; p < 2; p++) {
       int player = whoInHistory[p];    // 是谁出的牌
       auto playerAction = history[p];  // 出的哪些牌
-      Group playedCards;
+      vector<Card> playedCards;
       for (unsigned _ = 0; _ < playerAction.size();
            _++)  // 循环枚举这个人出的所有牌
       {
         int card = playerAction[_].asInt();  // 这里是出的一张牌
-        playedCards.insert(card);
+        playedCards.push_back(card);
       }
       whatTheyPlayed[player].push_back(playedCards);  // 记录这段历史
       cardRemaining[player] -= playerAction.size();
@@ -80,21 +81,21 @@ void read() {
       if (playerAction.size() == 0)
         howManyPass++;
       else
-        lastValidCombo = playedCards;
+        lastValidCombo = set<Card>(playedCards.begin(), playedCards.end());
     }
 
-    if (howManyPass == 2) lastValidCombo = Group();
+    if (howManyPass == 2) lastValidCombo = set<Card>();
 
     if (i < turn - 1) {
       // 还要恢复自己曾经出过的牌
       auto playerAction = input["responses"][i];  // 出的哪些牌
-      Group playedCards;
+      vector<Card> playedCards;
       for (unsigned _ = 0; _ < playerAction.size();
            _++)  // 循环枚举自己出的所有牌
       {
         int card = playerAction[_].asInt();  // 这里是自己出的一张牌
         myCards.erase(card);                 // 从自己手牌中删掉
-        playedCards.insert(card);
+        playedCards.push_back(card);
       }
       whatTheyPlayed[myPosition].push_back(playedCards);  // 记录这段历史
       cardRemaining[myPosition] -= playerAction.size();
@@ -110,7 +111,7 @@ void bid(int value) {
   cout << writer.write(result) << endl;
 }
 
-void play(const Group &group) {
+void play(const set<Card> &group) {
   Json::Value result, response(Json::arrayValue);
   for (auto &card : group) response.append(card);
   result["response"] = response;

@@ -31,18 +31,18 @@ Value evaluate(Counter *counter) {
 
 Hand defend(Counter *counter, const Hand &last_hand) {
   for (auto &selector : defending_sequence) {
-    Hand hand = (*selector)(counter, last_hand);
-    if (hand.is_not_found()) continue;
+    const Hand hand = (*selector)(counter, last_hand);
+    if (hand == not_found) continue;
     return hand;
   }
-  return Hand();
+  return not_found;
 }
 
 Hand attack(Counter *counter) {
   for (auto &selector : attacking_sequence) {
-    Hand hand = (*selector)(counter);
-    if (hand.is_not_found()) continue;
+    const Hand hand = (*selector)(counter);
+    if (hand == not_found) continue;
     return hand;
   }
-  return Hand();
+  return not_found;
 }

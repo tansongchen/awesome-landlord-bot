@@ -1,8 +1,3 @@
-// 叫分斗地主（FightThelandlord2）主程序：神算子
-// 强化学习策略
-// 作者：谭淞宸 刘上 张可尔
-// 游戏信息：http://www.botzone.org/games#FightThelandlord2
-
 #include "strategy.h"
 #include "environment.h"
 #include "strategy/solo_selector.cpp"

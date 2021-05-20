@@ -32,7 +32,7 @@ Counter::Counter(const Group &group) {
   for (const Card &card: group) ++(*this)[card_to_level(card)];
 }
 
-Group Counter::get_group(const Group &myCards) {
+Group Counter::get_group(const Group &myCards) const {
   Group group;
   Counter counter(*this);
   for (const auto card : myCards) {
@@ -56,11 +56,13 @@ Hand::Hand(const Counter &counter) {
   cosize = it2 == counter.rend() ? 0 : *it2;
 }
 
-Counter Hand::get_counter() {
+Counter Hand::get_counter() const {
   Counter counter;
   for (auto l = level; l != level - length; --l) counter[l] = size;
   if (cosize) for (const auto &l : attached) counter[l] = cosize;
   return counter;
 }
 
-bool Hand::is_not_found() { return size == -1; }
+bool Hand::operator==(const Hand &hand) const {
+  return level == hand.level;
+}

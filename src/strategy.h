@@ -9,18 +9,35 @@
 
 using namespace std;
 
+// Value of a Hand or a Counter
+using Value = char;
+
+// Interface for evaluating a hand : Hand -> Value
 using Evaluator = Value (*) (const Hand &);
+// Interface for actively playing cards : Counter -> Hand
 using AttackingSelector = Hand (*) (Counter *);
+// Interface for passively playing cards : Counter -> Hand -> Hand
 using DefendingSelector = Hand (*) (Counter *, const Hand &);
 
+// Global pointer pointing to the actual Evaluator used
 extern Evaluator evaluator;
+// Global pointers pointing to the actual AttackingSelectors used
 extern vector<AttackingSelector> attacking_sequence;
+// Global pointers pointing to the actual DefendingSelectors used
 extern vector<DefendingSelector> defending_sequence;
 
+/* Core workflow part */
+
+// Evaluate a Counter representing the cards that a player has
 Value evaluate(Counter *counter);
+// Suggest a bidding value according to `evaluate`
 unsigned suggest(Counter *counter);
-inline void update(Value *best_value, Hand *best_hand, const Hand &hand, Counter *counter);
-Hand defend(Counter *counter, const Hand &last_hand);
+// Actively play cards
 Hand attack(Counter *counter);
+// Passively play cards
+Hand defend(Counter *counter, const Hand &last_hand);
+
+// If the value of the `counter` is better than the `best_value`, update `best_hand` with `hand`
+inline void update(Value *best_value, Hand *best_hand, const Hand &hand, Counter *counter);
 
 #endif
