@@ -28,7 +28,7 @@ vector<Combination> combinations(const vector<Level> &universe, unsigned k) {
 
 Counter::Counter(): array<Count, maximumLevel>{} {}
 
-Counter::Counter(map<Level, Count> m): array<Count, maximumLevel>{} {
+Counter::Counter(const map<Level, Count> &m): array<Count, maximumLevel>{} {
   for (const auto &item : m) (*this)[item.first] = item.second;
 }
 
@@ -49,24 +49,33 @@ Group Counter::get_group(const Group &myCards) const {
   return group;
 }
 
-Hand::Hand(Level _level, Level _length, Count _size, Count _cosize): level(_level), length(_length), size(_size), cosize(_cosize) {}
+Hand::Hand(Level _level, Level _length, Count _size, Count _cosize, const Combination &_attached): level(_level), length(_length), size(_size), cosize(_cosize), attached(_attached) {}
 
-Hand::Hand(const Counter &counter) {
-  auto it1 = max_element(counter.rbegin(), counter.rend());
+Hand::Hand(const Counter &counter): level(0), length(1), size(1), cosize(0), attached{} {
+  const auto it1 = max_element(counter.rbegin(), counter.rend());
   size = *it1;
-  level = it1 - counter.rbegin();
-  auto it2 = find_if_not(it1, counter.rend(), [this](Count count){ return count == this->size; });
-  length = it1 - it2;
-  cosize = it2 == counter.rend() ? 0 : *it2;
+  level = redJokerLevel - (it1 - counter.rbegin());
+  const auto it2 = find_if(it1, counter.rend(), [this](Count count){ return count != this->size; });
+  length = it2 - it1;
+  const auto it3 = find_if(counter.rbegin(), counter.rend(), [this](Count count){ return count != this->size && count != 0; });
+  if (it3 != counter.rend()) {
+    cosize = *it3;
+    for (const Level &l : allLevels) if (counter[l] == cosize) attached.insert(l);
+  }
 }
 
 Counter Hand::get_counter() const {
   Counter counter;
-  for (auto l = level; l != level - length; --l) counter[l] = size;
+  for (Level i = 0; i != length; ++i) counter[level - i] = size;
   if (cosize) for (const auto &l : attached) counter[l] = cosize;
   return counter;
 }
 
 bool Hand::operator==(const Hand &hand) const {
-  return level == hand.level;
+  return level == hand.level && length == hand.length && size == hand.size && cosize == hand.cosize && attached == hand.attached;
+}
+
+ostream &operator<<(ostream &os, const Hand &hand) {
+  os << "Level: " << hand.level << ", Length: " << hand.length << ", Size: " << hand.size << ", Cosize: " << hand.cosize << endl;
+  return os;
 }

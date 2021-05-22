@@ -5,11 +5,12 @@
 #include <set>
 #include <map>
 #include <array>
+#include <iostream>
 
 using namespace std;
 
 // Representing 54 cards with 0 ~ 53
-using Card = unsigned char;
+using Card = unsigned short;
 constexpr Card blackJoker = 52;
 constexpr Card redJoker = 53;
 
@@ -19,7 +20,7 @@ using Group = set<Card>;
 // Representing the rank of Card with 0 ~ 14, ignoring suits
 // 3 4 5 6 7 8 9 10 J Q K A 2 blackJoker redJoker
 // 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
-using Level = unsigned char;
+using Level = unsigned short;
 constexpr Level maximumLevel = 15;
 constexpr Level maximumChainableLevel = 12;
 constexpr Level blackJokerLevel = 13;
@@ -33,13 +34,13 @@ using Combination = set<Level>;
 Level card_to_level(Card card);
 
 // Amount of Card that have certain Level
-using Count = unsigned char;
+using Count = unsigned short;
 
 // For every Level, store the amount of Card that have this Level; a subclass of array<Count, maximumLevel>
 struct Counter : public array<Count, maximumLevel> {
   Counter();
   // Construct a Counter from a initializer_list
-  Counter(map<Level, Count> m);
+  Counter(const map<Level, Count> &m);
   // Construct a Counter from a Group
   Counter(const Group &group);
   // Construct a Group from a Counter, and since the Counter does not contain the information of suits, a context myCards is needed
@@ -58,12 +59,13 @@ struct Hand {
   Count cosize;
   // Set of Levels that are used as attached Cards
   Combination attached;
-  Hand(Level _level = 0, Level _length = 1, Count _size = 1, Count _cosize = 0);
+  Hand(Level _level = 0, Level _length = 1, Count _size = 1, Count _cosize = 0, const Combination &_attached = {});
   // Construct a Hand from a Counter
   Hand(const Counter &counter);
   // Construct a Counter from a Hand
   Counter get_counter() const;
   bool operator==(const Hand &hand) const;
+  friend ostream &operator<<(ostream &os, const Hand &hand);
 };
 
 // a dummy Hand that means pass

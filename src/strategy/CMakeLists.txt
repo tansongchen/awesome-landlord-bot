@@ -10,4 +10,4 @@ add_library(
   pass_selector.cpp
   same_category_selector.cpp
 )
-target_link_libraries(libcard)
+target_link_libraries(libstrategy libcard)

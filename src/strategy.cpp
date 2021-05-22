@@ -6,7 +6,7 @@ Evaluator evaluator;
 vector<AttackingSelector> attacking_sequence;
 vector<DefendingSelector> defending_sequence;
 
-inline void update(Value *best_value, Hand *best_hand, const Hand &hand, Counter *counter) {
+void update(Value *best_value, Hand *best_hand, const Hand &hand, Counter *counter) {
   auto value = evaluate(counter);
   if (value > *best_value) {
     *best_value = value;
@@ -21,17 +21,17 @@ unsigned suggest(Counter *counter) {
 
 Value evaluate(Counter *counter) {
   Hand hand = attack(counter);
-  for (Level l = hand.level; l != hand.level - hand.length; --l) (*counter)[l] -= hand.size;
+  for (Level i = 0; i != hand.length; ++i) (*counter)[hand.level - i] -= hand.size;
   if (hand.cosize) for (const Level &l : hand.attached) (*counter)[l] -= hand.cosize;
-  auto resValue = evaluate(counter);
-  for (Level l = hand.level; l != hand.level - hand.length; --l) (*counter)[l] += hand.size;
+  Value value = all_of((*counter).begin(), (*counter).end(), [](Count count){ return count == 0; }) ? 0 : evaluate(counter);
+  for (Level i = 0; i != hand.length; ++i) (*counter)[hand.level - i] += hand.size;
   if (hand.cosize) for (const Level &l : hand.attached) (*counter)[l] += hand.cosize;
-  return evaluator(hand) + resValue;
+  return evaluator(hand) + value;
 }
 
 Hand defend(Counter *counter, const Hand &last_hand) {
   for (auto &selector : defending_sequence) {
-    const Hand hand = (*selector)(counter, last_hand);
+    const Hand hand = selector(counter, last_hand);
     if (hand == not_found) continue;
     return hand;
   }
@@ -40,7 +40,7 @@ Hand defend(Counter *counter, const Hand &last_hand) {
 
 Hand attack(Counter *counter) {
   for (auto &selector : attacking_sequence) {
-    const Hand hand = (*selector)(counter);
+    const Hand hand = selector(counter);
     if (hand == not_found) continue;
     return hand;
   }
