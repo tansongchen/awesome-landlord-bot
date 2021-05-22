@@ -17,6 +17,13 @@ TEST_CASE("Card / Level conversion", "[conversion]") {
   REQUIRE(card_to_level(card3) == level3);
 }
 
+TEST_CASE("Counter class", "[counter]") {
+  Group group = {0, 1, 2, 4, 5, blackJoker, redJoker};
+  Counter counter({{0, 3}, {1, 2}, {blackJokerLevel, 1}, {redJokerLevel, 1}});
+  REQUIRE(Counter(group) == counter);
+  REQUIRE(counter.get_group(group) == group);
+}
+
 TEST_CASE("Level combination", "[combination]") {
   vector<Level> attachables = {3, 4, 8, 10};
   REQUIRE(combinations(attachables, 0) == vector<set<Level>>{});
