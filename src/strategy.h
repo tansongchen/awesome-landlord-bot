@@ -10,7 +10,7 @@
 using namespace std;
 
 // Value of a Hand or a Counter
-using Value = char;
+using Value = short;
 
 // Interface for evaluating a hand : Hand -> Value
 using Evaluator = Value (*) (const Hand &);
@@ -38,6 +38,6 @@ Hand attack(Counter *counter);
 Hand defend(Counter *counter, const Hand &last_hand);
 
 // If the value of the `counter` is better than the `best_value`, update `best_hand` with `hand`
-inline void update(Value *best_value, Hand *best_hand, const Hand &hand, Counter *counter);
+void update(Value *best_value, Hand *best_hand, const Hand &hand, Counter *counter);
 
 #endif
