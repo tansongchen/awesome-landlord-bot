@@ -11,12 +11,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: |
-          wget https://github.com/catchorg/Catch2/releases/download/v2.13.6/catch.hpp -O test/catch.hpp
-          wget http://www.botzone.org.cn/static/JsonCPP_modified.zip -O jsoncpp.zip
-          unzip jsoncpp.zip -d src/
-          mkdir build
-          cd build
-          cmake ..
-          make test
-          ./test
+      - run: mkdir build && cd build && cmake .. && cmake --build . && ctest
