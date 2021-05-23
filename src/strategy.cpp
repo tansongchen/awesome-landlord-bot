@@ -16,16 +16,20 @@ void update(Value *best_value, Hand *best_hand, const Hand &hand, Counter *count
 
 unsigned suggest(Counter *counter) {
   Value value = evaluate(counter);
-  return value >= 20 ? 3 : value >= 15 ? 2 : value >= 10 ? 1 : 0;
+  return value >= 20 ? 3 : value >= 15 ? 2
+                       : value >= 10   ? 1
+                                       : 0;
 }
 
 Value evaluate(Counter *counter) {
   Hand hand = attack(counter);
   for (Level i = 0; i != hand.length; ++i) (*counter)[hand.level - i] -= hand.size;
-  if (hand.cosize) for (const Level &l : hand.attached) (*counter)[l] -= hand.cosize;
-  Value value = all_of((*counter).begin(), (*counter).end(), [](Count count){ return count == 0; }) ? 0 : evaluate(counter);
+  if (hand.cosize)
+    for (const Level &l : hand.attached) (*counter)[l] -= hand.cosize;
+  Value value = all_of((*counter).begin(), (*counter).end(), [](Count count) { return count == 0; }) ? 0 : evaluate(counter);
   for (Level i = 0; i != hand.length; ++i) (*counter)[hand.level - i] += hand.size;
-  if (hand.cosize) for (const Level &l : hand.attached) (*counter)[l] += hand.cosize;
+  if (hand.cosize)
+    for (const Level &l : hand.attached) (*counter)[l] += hand.cosize;
   return evaluator(hand) + value;
 }
 

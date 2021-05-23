@@ -1,8 +1,5 @@
-#include "strategy.h"
 #include "environment.h"
-#include "strategy/solo_selector.cpp"
-#include "strategy/pass_selector.cpp"
-#include "strategy/simple_evaluator.cpp"
+#include "strategy.h"
 
 int main() {
   read();

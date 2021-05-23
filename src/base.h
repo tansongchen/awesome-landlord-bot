@@ -1,11 +1,11 @@
 #ifndef BASE_H
 #define BASE_H
 
-#include <vector>
-#include <set>
-#include <map>
 #include <array>
 #include <iostream>
+#include <map>
+#include <set>
+#include <vector>
 
 using namespace std;
 
@@ -25,7 +25,8 @@ constexpr Level maximumLevel = 15;
 constexpr Level maximumChainableLevel = 12;
 constexpr Level blackJokerLevel = 13;
 constexpr Level redJokerLevel = 14;
-constexpr array<Level, 15> allLevels = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+constexpr array<Level, 15> allLevels = {0, 1, 2, 3, 4, 5,  6, 7,
+                                        8, 9, 10, 11, 12, 13, 14};
 
 // Set of Level
 using Combination = set<Level>;
@@ -36,14 +37,16 @@ Level card_to_level(Card card);
 // Amount of Card that have certain Level
 using Count = unsigned short;
 
-// For every Level, store the amount of Card that have this Level; a subclass of array<Count, maximumLevel>
+// For every Level, store the amount of Card that have this Level; a subclass of
+// array<Count, maximumLevel>
 struct Counter : public array<Count, maximumLevel> {
   Counter();
   // Construct a Counter from a initializer_list
   Counter(const map<Level, Count> &m);
   // Construct a Counter from a Group
   Counter(const Group &group);
-  // Construct a Group from a Counter, and since the Counter does not contain the information of suits, a context myCards is needed
+  // Construct a Group from a Counter, and since the Counter does not contain
+  // the information of suits, a context myCards is needed
   Group get_group(const Group &myCards) const;
 };
 
@@ -59,7 +62,8 @@ struct Hand {
   Count cosize;
   // Set of Levels that are used as attached Cards
   Combination attached;
-  Hand(Level _level = 0, Level _length = 1, Count _size = 1, Count _cosize = 0, const Combination &_attached = {});
+  Hand(Level _level = 0, Level _length = 1, Count _size = 1, Count _cosize = 0,
+       const Combination &_attached = {});
   // Construct a Hand from a Counter
   Hand(const Counter &counter);
   // Construct a Counter from a Hand
