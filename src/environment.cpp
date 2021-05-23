@@ -1,7 +1,8 @@
+#include "environment.h"
+
 #include <algorithm>
 #include <iostream>
 
-#include "environment.h"
 #include "jsoncpp/json.h"
 
 Stage stage = Stage::BIDDING;

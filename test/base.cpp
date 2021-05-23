@@ -1,8 +1,9 @@
-#include "catch2/catch.hpp"
-#include "../src/base.h"
-
-#include <set>
 #include <iostream>
+#include <set>
+
+#include "../src/base.h"
+#include "catch2/catch.hpp"
+
 using namespace std;
 
 TEST_CASE("Card / Level conversion", "[conversion]") {
@@ -10,7 +11,7 @@ TEST_CASE("Card / Level conversion", "[conversion]") {
   Card card2 = redJoker;
   Level level1 = blackJokerLevel;
   Level level2 = redJokerLevel;
-  Card card3 = 18; // one of the "7" s
+  Card card3 = 18;  // one of the "7" s
   Level level3 = 4;
   REQUIRE(card_to_level(card1) == level1);
   REQUIRE(card_to_level(card2) == level2);
