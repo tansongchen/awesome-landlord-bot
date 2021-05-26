@@ -1,4 +1,1 @@
 build/
-src/jsoncpp
-src/jsoncpp.cpp
-test/catch.hpp

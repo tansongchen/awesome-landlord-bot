@@ -5,12 +5,10 @@ An agent for the game "FightTheLandlord" (a.k.a. Doudizhu) implemented with Recu
 ## Getting Started
 
 1. Clone this repository;
-2. [Download](https://wiki.botzone.org.cn/index.php?title=JSONCPP) `jsoncpp` folder and `jsoncpp.cpp` file to `src/` directory;
-3. [Download](https://github.com/catchorg/Catch2/releases/download/v2.13.6/catch.hpp) `catch.hpp` file to `test/` directory;
-4. Make sure `cmake` and `make` is installed;
-5. Build with `mkdir build && cd build && cmake .. && make`, and depending on your compiler choice, you may need option like `cmake .. -D CMAKE_CXX_COMPILER=g++`;
-6. Run tests with `./test`;
-7. Run main program with `./main`.
+2. Make sure you have `cmake >= 3.20` installed;
+3. Build with `mkdir build && cd build && cmake .. && cmake --build .`, and depending on your compiler choice, you may need option like `cmake .. -D CMAKE_CXX_COMPILER=g++`;
+4. Run tests with `ctest`;
+5. Run main program with `./main`.
 
 ## Code Structure
 
