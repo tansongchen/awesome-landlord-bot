@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include "../environment.h"
 #include "../strategy.h"
 
 Hand same_category_selector(Counter *counter, const Hand &last_hand) {

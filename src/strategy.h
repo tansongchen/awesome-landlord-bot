@@ -47,12 +47,12 @@ Value simple_evaluator(const Hand &hand);
 Hand full_enumeration_selector(Counter *counter);
 Hand one_shot_selector(Counter *counter);
 Hand solo_selector(Counter *counter);
-Hand attack_boom_selector(Counter *counter);
+Hand attacking_absolute_dominant_selector(Counter *counter);
 // Defend
 Hand boom_terminator_selector(Counter *counter, const Hand &last_hand);
 Hand pass_selector(Counter *counter, const Hand &last_hand);
 Hand same_category_selector(Counter *counter, const Hand &last_hand);
 Hand solo_selector(Counter *counter);
-Hand attacking_absolute_dominant_selector(Counter *counter);
-Hand defend_boom_selector(Counter *counter, const Hand &last_hand);
+Hand defending_absolute_dominant_selector(Counter *counter,
+                                          const Hand &last_hand);
 #endif

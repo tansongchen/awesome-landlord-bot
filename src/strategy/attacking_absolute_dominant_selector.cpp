@@ -1,7 +1,6 @@
-#include "../strategy.h"
-#include "../environment.h"
-
 #include <algorithm>
+
+#include "../strategy.h"
 
 Hand attacking_absolute_dominant_selector(Counter *counter) {
   if ((*counter)[blackJokerLevel] && (*counter)[redJokerLevel]) {

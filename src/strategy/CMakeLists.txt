@@ -4,6 +4,8 @@ add_library(
   simple_evaluator.cpp
   # AttackingSelector
   solo_selector.cpp
+  boom_terminator_selector.cpp
+  defending_absolute_dominant_selector.cpp
   one_shot_selector.cpp
   full_enumeration_selector.cpp
   attacking_absolute_dominant_selector.cpp
