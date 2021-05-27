@@ -1,6 +1,6 @@
-#include "../strategy.h"
-
 #include <algorithm>
+
+#include "../strategy.h"
 
 Hand full_enumeration_selector(Counter *counter) {
   array<Level, 4> count;
@@ -32,37 +32,54 @@ Hand full_enumeration_selector(Counter *counter) {
         if ((*counter)[level] > 2) {
           ++count[2];
           for (auto length = count[2]; length >= 1; --length) {
-            for (auto l = level; l != level - length; --l) (*counter)[level] -= 3;
+            for (auto l = level; l != level - length; --l)
+              (*counter)[level] -= 3;
             for (auto cosize = 0; cosize != 3; ++cosize) {
               vector<Level> attachables;
-              copy_if(allLevels.begin(), allLevels.end(), back_inserter(attachables), [=](Level l){ return (*counter)[l] >= cosize && (l > level || l <= level - length); });
+              copy_if(allLevels.begin(), allLevels.end(),
+                      back_inserter(attachables), [=](Level l) {
+                        return (*counter)[l] >= cosize &&
+                               (l > level || l <= level - length);
+                      });
               for (auto &combination : combinations(attachables, cosize)) {
                 for (auto &l : combination) (*counter)[l] -= cosize;
                 update(&best_value, &best_hand, hand, counter);
                 for (auto &l : combination) (*counter)[l] += cosize;
               }
             }
-            for (auto l = level; l != level - length; --l) (*counter)[level] += 3;
+            for (auto l = level; l != level - length; --l)
+              (*counter)[level] += 3;
           }
           if (count[level] > 3) {
             ++count[3];
             for (auto length = count[3]; length >= 1; --length) {
-              for (auto l = level; l != level - length; --l) (*counter)[level] -= 4;
+              for (auto l = level; l != level - length; --l)
+                (*counter)[level] -= 4;
               for (auto cosize = 0; cosize != 3; ++cosize) {
                 vector<Level> attachables;
-                copy_if(allLevels.begin(), allLevels.end(), back_inserter(attachables), [=](Level l){ return (*counter)[l] >= cosize && (l > level || l <= level - length); });
-                for (auto &combination : combinations(attachables, 2 * cosize)) {
+                copy_if(allLevels.begin(), allLevels.end(),
+                        back_inserter(attachables), [=](Level l) {
+                          return (*counter)[l] >= cosize &&
+                                 (l > level || l <= level - length);
+                        });
+                for (auto &combination :
+                     combinations(attachables, 2 * cosize)) {
                   for (auto &l : combination) (*counter)[l] -= cosize;
                   update(&best_value, &best_hand, hand, counter);
                   for (auto &l : combination) (*counter)[l] += cosize;
                 }
               }
-              for (auto l = level; l != level - length; --l) (*counter)[level] += 4;
+              for (auto l = level; l != level - length; --l)
+                (*counter)[level] += 4;
             }
-          } else count[3] = 0;
-        } else count[2] = count[3] = 0;
-      } else count[1] = count[2] = count[3] = 0;
-    } else count[0] = count[1] = count[2] = count[3] = 0;
+          } else
+            count[3] = 0;
+        } else
+          count[2] = count[3] = 0;
+      } else
+        count[1] = count[2] = count[3] = 0;
+    } else
+      count[0] = count[1] = count[2] = count[3] = 0;
   }
   return best_hand;
 }
