@@ -26,7 +26,7 @@ constexpr Level maximumLevel = 15;
 constexpr Level maximumChainableLevel = 12;
 constexpr Level blackJokerLevel = 13;
 constexpr Level redJokerLevel = 14;
-constexpr array<Level, 15> allLevels = {0, 1, 2, 3, 4, 5,  6, 7,
+constexpr array<Level, 15> allLevels = {0, 1, 2,  3,  4,  5,  6, 7,
                                         8, 9, 10, 11, 12, 13, 14};
 
 // Set of Level
@@ -61,7 +61,7 @@ struct Hand {
   Level length;
   // Count of Card that has a Level level
   Count size;
-  // Count of Card that has a Level level
+  // Count of Card that has not a Level level
   Count cosize;
   // Set of Levels that are used as attached Cards
   Combination attached;
