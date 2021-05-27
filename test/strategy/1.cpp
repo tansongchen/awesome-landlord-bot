@@ -7,7 +7,7 @@
 
 using namespace std;
 
-TEST_CASE("Strategy 1: the last hand", "[0]") {
+TEST_CASE("Strategy 1: the last hand", "[1]") {
   evaluator = simple_evaluator;
   attacking_sequence = {one_shot_selector};
 
@@ -20,10 +20,6 @@ TEST_CASE("Strategy 1: the last hand", "[0]") {
     // on attacking it gives all cards;
     REQUIRE(attack(&counter) == hand);
   }
-}
-TEST_CASE("Strategy 2: the last hand", "[0]") {
-  evaluator = simple_evaluator;
-  attacking_sequence = {one_shot_selector};
 
   SECTION("Case 2") {
     Counter counter({0, 1, 2, 3, 50, 51});  // 3 3 3 3 2 2
