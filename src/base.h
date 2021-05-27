@@ -16,6 +16,7 @@ constexpr Card redJoker = 53;
 
 // Set of Card
 using Group = set<Card>;
+ostream &operator<<(ostream &os, const Group &group);
 
 // Representing the rank of Card with 0 ~ 14, ignoring suits
 // 3 4 5 6 7 8 9 10 J Q K A 2 blackJoker redJoker
@@ -30,6 +31,7 @@ constexpr array<Level, 15> allLevels = {0, 1, 2, 3, 4, 5,  6, 7,
 
 // Set of Level
 using Combination = set<Level>;
+void output(const Combination &combinations);
 
 // Converting Card to Level
 Level card_to_level(Card card);
@@ -48,6 +50,7 @@ struct Counter : public array<Count, maximumLevel> {
   // Construct a Group from a Counter, and since the Counter does not contain
   // the information of suits, a context myCards is needed
   Group get_group(const Group &myCards) const;
+  friend ostream &operator<<(ostream &os, const Counter &counter);
 };
 
 // Parametric and abstract representation of several Cards played in one turn
@@ -73,9 +76,11 @@ struct Hand {
 };
 
 // a dummy Hand that means pass
-const Hand pass(-1);
+const Hand pass(-1, 0, 0, 0);
 // a dummy Hand that means no suitable Hand is found by a Selector
-const Hand not_found(-2);
+const Hand not_found(-2, 0, 0, 0);
+// Rocket
+const Hand rocket(redJokerLevel, 2, 1);
 
 // choose k Levels from a bunch of Levels
 vector<Combination> combinations(const vector<Level> &universe, unsigned k);

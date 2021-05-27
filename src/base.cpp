@@ -5,7 +5,16 @@
 
 using namespace std;
 
+void output(const Group &group) {
+  for (const auto &card : group) cout << card << " ";
+}
+
 Level card_to_level(Card card) { return card / 4 + card / 53; }
+
+ostream &operator<<(ostream &os, const Combination &combinations) {
+  for (const auto &level : combinations) os << level << " ";
+  return os;
+}
 
 vector<Combination> combinations(const vector<Level> &universe, unsigned k) {
   vector<Combination> result;
@@ -51,6 +60,13 @@ Group Counter::get_group(const Group &myCards) const {
   return group;
 }
 
+ostream &operator<<(ostream &os, const Counter &counter) {
+  for (const auto &level : allLevels) {
+    cout << level << ": " << counter[level] << ", ";
+  }
+  return os;
+}
+
 Hand::Hand(Level _level, Level _length, Count _size, Count _cosize,
            const Combination &_attached)
     : level(_level),
@@ -92,6 +108,7 @@ bool Hand::operator==(const Hand &hand) const {
 
 ostream &operator<<(ostream &os, const Hand &hand) {
   os << "Level: " << hand.level << ", Length: " << hand.length
-     << ", Size: " << hand.size << ", Cosize: " << hand.cosize << endl;
+     << ", Size: " << hand.size << ", Cosize: " << hand.cosize
+     << ", Attached: " << hand.attached;
   return os;
 }

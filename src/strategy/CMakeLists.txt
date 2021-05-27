@@ -6,6 +6,7 @@ add_library(
   solo_selector.cpp
   one_shot_selector.cpp
   full_enumeration_selector.cpp
+  attacking_absolute_dominant_selector.cpp
   # DefendingSelector
   pass_selector.cpp
   same_category_selector.cpp

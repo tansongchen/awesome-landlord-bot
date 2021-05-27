@@ -46,4 +46,5 @@ Hand one_shot_selector(Counter *counter);
 Hand pass_selector(Counter *counter, const Hand &last_hand);
 Hand same_category_selector(Counter *counter, const Hand &last_hand);
 Hand solo_selector(Counter *counter);
+Hand attacking_absolute_dominant_selector(Counter *counter);
 #endif
