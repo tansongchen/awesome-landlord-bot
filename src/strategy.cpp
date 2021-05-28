@@ -8,10 +8,10 @@ vector<DefendingSelector> defending_sequence;
 
 void update(Value *best_value, Hand *best_hand, const Hand &hand,
             Counter *counter) {
-  auto value = evaluate(counter);
+  Value value = evaluate(counter) + evaluator(hand);
   if (value > *best_value) {
     *best_value = value;
-    *best_hand = hand;
+    *best_hand = Hand(hand);
   }
 }
 

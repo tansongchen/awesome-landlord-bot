@@ -5,7 +5,6 @@
 Hand boom_terminator_selector(Counter *counter, const Hand &last_hand) {
   Hand mycards(*counter);
   Counter recounter = mycards.get_counter();
-  Hand best_hand(not_found);
   bool final_round = *counter == recounter;
   bool boom = (mycards.size == 4 && mycards.length == 1 && mycards.cosize == 0);
   bool rocket = (mycards.level == redJokerLevel && mycards.length == 2);

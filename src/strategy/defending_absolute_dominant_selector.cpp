@@ -17,7 +17,7 @@ Hand defending_absolute_dominant_selector(Counter *counter,
 
   // if last_hand is not bomb
   for (const Level &l : allLevels)  // bomb
-    if ((*counter)[l] == 4) return Hand(l, 1, 4, 0);
+    if ((*counter)[l] == 4) return Hand(l, 1, 4);
   if ((*counter)[blackJokerLevel] > 0 &&
       (*counter)[redJokerLevel] > 0)  // rocket
     return rocket;
