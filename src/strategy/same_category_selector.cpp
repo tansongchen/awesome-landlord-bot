@@ -1,6 +1,5 @@
 #include <algorithm>
 
-#include "../base.h"
 #include "../environment.h"
 #include "../strategy.h"
 
