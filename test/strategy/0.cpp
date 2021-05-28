@@ -9,7 +9,7 @@ using namespace std;
 
 TEST_CASE("Strategy 0: the very fallback strategy", "[0]") {
   evaluator = simple_evaluator;
-  attacking_sequence = {solo_selector};
+  attacking_sequence = {minimal_selector};
   defending_sequence = {pass_selector};
 
   SECTION("Case 1") {
