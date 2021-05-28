@@ -24,6 +24,7 @@ ostream &operator<<(ostream &os, const Group &group);
 using Level = unsigned short;
 constexpr Level maximumLevel = 15;
 constexpr Level maximumChainableLevel = 12;
+constexpr Level selfishThresholdLevel = 10;
 constexpr Level blackJokerLevel = 13;
 constexpr Level redJokerLevel = 14;
 constexpr array<Level, 15> allLevels = {0, 1, 2,  3,  4,  5,  6, 7,
