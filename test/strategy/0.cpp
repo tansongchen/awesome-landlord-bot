@@ -7,21 +7,50 @@
 
 using namespace std;
 
-TEST_CASE("Strategy 0: the very fallback strategy", "[0]") {
+TEST_CASE("Attack-only Non-recursive Test", "[0]") {
   evaluator = simple_evaluator;
-  attacking_sequence = {minimal_selector};
-  defending_sequence = {pass_selector};
+  attacking_sequence = {
+    one_shot_selector,
+    attacking_absolute_dominant_selector,
+    minimal_selector,
+    attacking_bomb_rocket_selector,
+    solo_selector // when Trio is not pruned during selfish_2_selector, must include this as a fallback approach
+  };
 
   SECTION("Case 1") {
-    Counter counter({29, 41, 42, 48, 50, 51, redJoker});  // 10 K K 2 2 2 redJoker
-    Hand hand(0);                                         // Solo 3
-    Value value = 0;
-    for (const auto &l : allLevels) value += counter[l] * evaluator(Hand(l));
+    Counter counter{"3TKKKAAA"};
+    Value value = (11 + 1) / 2;
+    Hand hand(counter);
+    // on attacking it gives all cards;
+    REQUIRE(attack(&counter) == hand);
+    // on evaluating it gives the value
+    REQUIRE(evaluate(&counter) == value);
+  }
+
+  SECTION("Case 2") {
+    Counter counter{"33BR"};
+    Value value = 20 - 7;
+    // on attacking it gives all cards;
+    REQUIRE(attack(&counter) == rocket);
+    // on evaluating it gives the value
+    REQUIRE(evaluate(&counter) == value);
+  }
+
+  SECTION("Case 3") {
+    Counter counter{"TKK22R"};
+    Value value = 0 + 3 + 5 + 7;
+    // on attacking it gives the smallest Solo;
+    REQUIRE(attack(&counter) == Hand{"T"});
     // on evaluating it gives the sum of Solo value
     REQUIRE(evaluate(&counter) == value);
-    // on attacking it gives the smallest Solo;
-    REQUIRE(attack(&counter) == Hand(7));
-    // on defending it can only pass
-    REQUIRE(defend(&counter, hand) == pass);
+  }
+
+  SECTION("Case 4") {
+    Counter counter{"3333"};
+    Value value = 7;
+    // on attacking it gives all cards;
+    REQUIRE(attack(&counter) == Hand{"3333"});
+    // on evaluating it gives the sum of Solo value
+    REQUIRE(evaluate(&counter) == value);
   }
 }

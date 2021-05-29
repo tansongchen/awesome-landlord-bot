@@ -26,7 +26,7 @@ Value evaluate(Counter *counter) {
     (*counter)[hand.level - i] -= hand.size;
   if (hand.cosize)
     for (const Level &l : hand.attached) (*counter)[l] -= hand.cosize;
-  Value value = all_of((*counter).begin(), (*counter).end(),
+  Value value = all_of(counter->begin(), counter->end(),
                        [](Count count) { return count == 0; })
                     ? 0
                     : evaluate(counter);
@@ -43,7 +43,7 @@ Hand defend(Counter *counter, const Hand &last_hand) {
     if (hand == not_found) continue;
     return hand;
   }
-  return not_found;
+  throw runtime_error("No suitable hand found during defending!");
 }
 
 Hand attack(Counter *counter) {
@@ -52,5 +52,5 @@ Hand attack(Counter *counter) {
     if (hand == not_found) continue;
     return hand;
   }
-  return not_found;
+  throw runtime_error("No suitable hand found during attacking!");
 }

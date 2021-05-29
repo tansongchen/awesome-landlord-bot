@@ -7,15 +7,56 @@
 
 using namespace std;
 
-TEST_CASE("Strategy 2: Try to play a absolute dominant hand before the fallback strategy", "[2]") {
+TEST_CASE("Attack-only Recursive Test", "[2]") {
   evaluator = simple_evaluator;
-  attacking_sequence = {attacking_absolute_dominant_selector, minimal_selector};
+  attacking_sequence = {
+    one_shot_selector,
+    attacking_absolute_dominant_selector,
+    selfish_1_selector,
+    selfish_2_selector,
+    minimal_selector,
+    attacking_bomb_rocket_selector
+  };
 
   SECTION("Case 1") {
-    Counter counter({2, 3, 52, 53});
-    // on evaluating it gives the value
-    REQUIRE(evaluate(&counter) == 6);
-    // on attacking it gives all cards;
+    Counter counter{"3TKKKAAA"};
+    Value value = (11 + 1) / 2;
+    REQUIRE(attack(&counter) == Hand(counter));
+    REQUIRE(evaluate(&counter) == value);
+  }
+
+  SECTION("Case 2") {
+    Counter counter{"33BR"};
+    Value value = 20 - 7;
     REQUIRE(attack(&counter) == rocket);
+    REQUIRE(evaluate(&counter) == value);
+  }
+
+  SECTION("Case 3") {
+    Counter counter{"3TKKKAAA2"};
+    Value value = (11 + 1) / 2 + 5;
+    REQUIRE(attack(&counter) == Hand{"3TKKKAAA"});
+    REQUIRE(evaluate(&counter) == value);
+  }
+
+  SECTION("Case 4") {
+    Counter counter{"4888TKKR"};
+    Value value = -2 + 0 + 3 + 7;
+    REQUIRE(attack(&counter) == Hand{"4888"});
+    REQUIRE(evaluate(&counter) == value);
+  }
+
+  SECTION("Case 5") {
+    Counter counter{"488TKKR"};
+    Value value = -6 + -2 + 0 + 3 + 7;
+    REQUIRE(attack(&counter) == Hand{"4"});
+    REQUIRE(evaluate(&counter) == value);
+  }
+
+  SECTION("Case 6") {
+    Counter counter{"3333"};
+    Value value = 7;
+    REQUIRE(attack(&counter) == Hand{"3333"});
+    REQUIRE(evaluate(&counter) == value);
   }
 }

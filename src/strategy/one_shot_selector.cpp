@@ -12,11 +12,12 @@ Hand one_shot_selector(Counter *counter) {
       valid = hand.cosize == 0 && hand.length == 1 || hand.length >= 3;
       break;
     case 3:
-    case 4:
-      valid = hand.cosize <= 2;
+      valid = hand.cosize <= 2 && hand.attached.size() == hand.length;
       break;
-    default:
-      cout << "Warning: Attack with invalid Counter!" << endl;
+    case 4:
+      valid = hand.cosize <= 2 && hand.attached.size() == hand.length * 2;
+      break;
+    default: throw runtime_error("Attack with invalid Counter!");
   }
   if (!valid) return not_found;
   Counter recounter = hand.get_counter();

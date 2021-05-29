@@ -2,7 +2,7 @@
 
 #include "../strategy.h"
 
-Hand boom_terminator_selector(Counter *counter, const Hand &last_hand) {
+Hand defending_bomb_rocket_selector(Counter *counter, const Hand &last_hand) {
   Hand mycards(*counter);
   Counter recounter = mycards.get_counter();
   bool final_round = *counter == recounter;

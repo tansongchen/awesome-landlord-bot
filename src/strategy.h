@@ -11,6 +11,7 @@ using namespace std;
 
 // Value of a Hand or a Counter
 using Value = short;
+constexpr Value minimumValue = -32768;
 
 // Interface for evaluating a hand : Hand -> Value
 using Evaluator = Value (*)(const Hand &);
@@ -49,12 +50,12 @@ Hand attacking_absolute_dominant_selector(Counter *counter);
 Hand selfish_1_selector(Counter *counter);
 Hand selfish_2_selector(Counter *counter);
 Hand minimal_selector(Counter *counter);
-Hand empty_bomb_rocket_selector(Counter *counter);
+Hand attacking_bomb_rocket_selector(Counter *counter);
+Hand solo_selector(Counter *counter);
 // Defend
-Hand boom_terminator_selector(Counter *counter, const Hand &last_hand);
+Hand defending_bomb_rocket_selector(Counter *counter, const Hand &last_hand);
 Hand pass_selector(Counter *counter, const Hand &last_hand);
 Hand same_category_selector(Counter *counter, const Hand &last_hand);
-Hand solo_selector(Counter *counter);
 Hand defending_absolute_dominant_selector(Counter *counter,
                                           const Hand &last_hand);
 #endif

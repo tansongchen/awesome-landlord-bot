@@ -3,7 +3,7 @@
 #include <algorithm>
 
 Hand selfish_2_selector(Counter *counter) {
-  Value best_value;
+  Value best_value = minimumValue;
   Hand best_hand(not_found), hand;
   auto &level = hand.level, &length = hand.length;
   auto &size = hand.size, &cosize = hand.cosize;
@@ -12,7 +12,9 @@ Hand selfish_2_selector(Counter *counter) {
   size = 3; length = 1;
   for (level = 0; level != selfishThresholdLevel; ++level) {
     if ((*counter)[level] == 3) {
-      for (cosize = 0; cosize != 3; ++cosize) {
+      (*counter)[level] -= size;
+      update(&best_value, &best_hand, hand, counter);
+      for (cosize = 1; cosize != 3; ++cosize) {
         vector<Level> attachables;
         copy_if(allLevels.begin(), allLevels.end(), back_inserter(attachables), [&](Level l){ return (*counter)[l] >= cosize && l != level; });
         for (const auto &combination : combinations(attachables, length)) {
@@ -22,6 +24,7 @@ Hand selfish_2_selector(Counter *counter) {
           for (const auto &l : combination) (*counter)[l] += cosize;
         }
       }
+      (*counter)[level] += size;
     }
   }
   // Solo Chain
