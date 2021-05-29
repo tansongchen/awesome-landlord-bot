@@ -114,10 +114,6 @@ void bid(int value) {
 
 void play(const set<Card> &group) {
   Json::Value result, response(Json::arrayValue);
-  for (auto &card : group) {
-    cout << (int) card << endl;
-    response.append(card);
-  }
   result["response"] = response;
 
   Json::FastWriter writer;

@@ -5,10 +5,11 @@ int main() {
   read();
   cout << "read successful" << endl;
   evaluator = simple_evaluator;
-  attacking_sequence = {attacking_absolute_dominant_selector, one_shot_selector,
-                        full_enumeration_selector, solo_selector};
-  defending_sequence = {boom_terminator_selector, same_category_selector,
-                        defending_absolute_dominant_selector, pass_selector};
+  attacking_sequence = {one_shot_selector, attacking_absolute_dominant_selector,
+                        selfish_1_selector, selfish_2_selector, minimal_selector,
+                        attacking_bomb_rocket_selector};
+  defending_sequence = {defending_absolute_dominant_selector, same_category_selector,
+                        defending_bomb_rocket_selector, pass_selector};
   cout << "strats load successful" << endl;
   Counter counter(myCards);
   if (stage == Stage::BIDDING) {

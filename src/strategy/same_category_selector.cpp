@@ -5,7 +5,7 @@
 
 Hand same_category_selector(Counter *counter, const Hand &last_hand) {
   Level count = 0;
-  Value best_value = -10000;
+  Value best_value = minimumValue;
   Hand best_hand(not_found), hand;
   Level &level = hand.level, &length = hand.length;
   Count &size = hand.size, &cosize = hand.cosize;

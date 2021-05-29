@@ -37,6 +37,9 @@ void output(const Combination &combinations);
 // Converting Card to Level
 Level card_to_level(Card card);
 
+// Converting char to Level
+Level char_to_level(char c);
+
 // Amount of Card that have certain Level
 using Count = unsigned short;
 
@@ -48,6 +51,8 @@ struct Counter : public array<Count, maximumLevel> {
   Counter(const map<Level, Count> &m);
   // Construct a Counter from a Group
   Counter(const Group &group);
+  // Construct a Counter from a string
+  Counter(const char *s);
   // Construct a Group from a Counter, and since the Counter does not contain
   // the information of suits, a context myCards is needed
   Group get_group(const Group &myCards) const;
@@ -70,6 +75,8 @@ struct Hand {
        const Combination &_attached = {});
   // Construct a Hand from a Counter
   Hand(const Counter &counter);
+  // Construct a Hand from a string
+  Hand(const char *s);
   // Construct a Counter from a Hand
   Counter get_counter() const;
   bool operator==(const Hand &hand) const;

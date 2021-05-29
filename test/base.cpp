@@ -26,8 +26,8 @@ TEST_CASE("Counter class", "[counter]") {
 }
 
 TEST_CASE("Hand class", "[hand]") {
-  Counter counters[4] = {Counter({0}), Counter({0, 4, 8, 12, 16}), Counter({20, 21, 22, 29}), Counter({{0, 1}, {1, 1}, {3, 1}, {7, 1}, {10, 4}, {11, 4}})};
-  Hand hands[4] = {Hand(), Hand(4, 5, 1), Hand(5, 1, 3, 1, {7}), Hand(11, 2, 4, 1, {0, 1, 3, 7})};
+  Counter counters[4] = {Counter({0, 1, 2}), Counter({0, 4, 8, 12, 16}), Counter({20, 21, 22, 29}), Counter({{0, 1}, {1, 1}, {3, 1}, {7, 1}, {10, 4}, {11, 4}})};
+  Hand hands[4] = {Hand(0, 1, 3), Hand(4, 5, 1), Hand(5, 1, 3, 1, {7}), Hand(11, 2, 4, 1, {0, 1, 3, 7})};
   for (int i = 0; i != 4; ++i) {
     REQUIRE(Hand(counters[i]) == hands[i]);
     REQUIRE(counters[i] == hands[i].get_counter());

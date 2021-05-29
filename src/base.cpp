@@ -11,6 +11,20 @@ void output(const Group &group) {
 
 Level card_to_level(Card card) { return card / 4 + card / 53; }
 
+Level char_to_level(char c) {
+  switch (c) {
+    case 't': case 'T': return 7;
+    case 'j': case 'J': return 8;
+    case 'q': case 'Q': return 9;
+    case 'k': case 'K': return 10;
+    case 'a': case 'A': return 11;
+    case '2': return 12;
+    case 'b': case 'B': return 13;
+    case 'r': case 'R': return 14;
+    default: return c - '3';
+  }
+}
+
 ostream &operator<<(ostream &os, const Combination &combinations) {
   for (const auto &level : combinations) os << level << " ";
   return os;
@@ -45,6 +59,10 @@ Counter::Counter(const map<Level, Count> &m) : array<Count, maximumLevel>{} {
 
 Counter::Counter(const Group &group) : array<Count, maximumLevel>{} {
   for (const Card &card : group) ++(*this)[card_to_level(card)];
+}
+
+Counter::Counter(const char *s) : array<Count, maximumLevel>{} {
+  for (const char &c : string(s)) ++(*this)[char_to_level(c)];
 }
 
 Group Counter::get_group(const Group &myCards) const {
@@ -87,11 +105,17 @@ Hand::Hand(const Counter &counter)
       counter.rbegin(), counter.rend(),
       [this](Count count) { return count != this->size && count != 0; });
   if (it3 != counter.rend()) {
+    short attachedLevels = size == 4 ? 2 * length : length;
     cosize = *it3;
     for (const Level &l : allLevels)
-      if (counter[l] == cosize) attached.insert(l);
+      if (counter[l] == cosize && attachedLevels > 0) {
+        attached.insert(l);
+        --attachedLevels;
+      }
   }
 }
+
+Hand::Hand(const char *s) : Hand(Counter(s)) {}
 
 Counter Hand::get_counter() const {
   Counter counter;

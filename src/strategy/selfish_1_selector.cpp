@@ -12,6 +12,7 @@ Hand selfish_1_selector(Counter *counter) {
   size = 4; length = 1;
   for (level = 0; level != maximumLevel; ++level) {
     if ((*counter)[level] == 4) {
+      (*counter)[level] -= size;
       for (cosize = 1; cosize != 3; ++cosize) {
         vector<Level> attachables;
         copy_if(allLevels.begin(), allLevels.end(), back_inserter(attachables), [&](Level l){ return (*counter)[l] >= cosize && l != level; });
@@ -22,6 +23,7 @@ Hand selfish_1_selector(Counter *counter) {
           for (const auto &l : combination) (*counter)[l] += cosize;
         }
       }
+      (*counter)[level] += size;
     }
   }
   // Double Chain, Trio Chain, Trio with Solo Chain, Trio with Pair Chain
@@ -43,7 +45,8 @@ Hand selfish_1_selector(Counter *counter) {
           for (cosize = 0; cosize != 3; ++cosize) {
             vector<Level> attachables;
             copy_if(allLevels.begin(), allLevels.end(), back_inserter(attachables), [=](Level l){ return (*counter)[l] >= cosize && (l > level || l <= level - length); });
-            for (auto &combination : combinations(attachables, cosize)) {
+            for (auto &combination : combinations(attachables, length)) {
+              attached = combination;
               for (auto &l : combination) (*counter)[l] -= cosize;
               update(&best_value, &best_hand, hand, counter);
               for (auto &l : combination) (*counter)[l] += cosize;
