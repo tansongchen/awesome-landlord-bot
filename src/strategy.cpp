@@ -6,35 +6,43 @@ Evaluator evaluator;
 vector<AttackingSelector> attacking_sequence;
 vector<DefendingSelector> defending_sequence;
 
-void update(Value *best_value, Hand *best_hand, const Hand &hand,
+Pair::Pair(Value _value, unsigned short _round): value(_value), round(_round) {}
+
+Score Pair::score() const {
+  return value - 7 * round;
+}
+
+bool Pair::operator==(const Pair &rhs) const {
+  return value == rhs.value && round == rhs.round;
+}
+
+void update(Score *best_score, Hand *best_hand, const Hand &hand,
             Counter *counter) {
-  Value value = evaluate(counter) + evaluator(hand);
-  if (value > *best_value) {
-    *best_value = value;
+  Pair pair = evaluate(counter);
+  if (pair.score() > *best_score) {
+    *best_score = pair.score();
     *best_hand = Hand(hand);
   }
 }
 
 unsigned suggest(Counter *counter) {
-  Value value = evaluate(counter);
-  return value >= 20 ? 3 : value >= 15 ? 2 : value >= 10 ? 1 : 0;
+  Score score = evaluate(counter).score();
+  return score >= 20 ? 3 : score >= 15 ? 2 : score >= 10 ? 1 : 0;
 }
 
-Value evaluate(Counter *counter) {
+Pair evaluate(Counter *counter) {
+  if (*counter == empty) return Pair();
   Hand hand = attack(counter);
   for (Level i = 0; i != hand.length; ++i)
     (*counter)[hand.level - i] -= hand.size;
   if (hand.cosize)
     for (const Level &l : hand.attached) (*counter)[l] -= hand.cosize;
-  Value value = all_of(counter->begin(), counter->end(),
-                       [](Count count) { return count == 0; })
-                    ? 0
-                    : evaluate(counter);
+  Pair pair = evaluate(counter);
   for (Level i = 0; i != hand.length; ++i)
     (*counter)[hand.level - i] += hand.size;
   if (hand.cosize)
     for (const Level &l : hand.attached) (*counter)[l] += hand.cosize;
-  return evaluator(hand) + value;
+  return Pair(pair.value + evaluator(hand), pair.round + 1);
 }
 
 Hand defend(Counter *counter, const Hand &last_hand) {

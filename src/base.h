@@ -59,6 +59,8 @@ struct Counter : public array<Count, maximumLevel> {
   friend ostream &operator<<(ostream &os, const Counter &counter);
 };
 
+const Counter empty;
+
 // Parametric and abstract representation of several Cards played in one turn
 struct Hand {
   // Level of the biggest main Card

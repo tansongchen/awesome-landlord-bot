@@ -3,7 +3,7 @@
 #include <algorithm>
 
 Hand selfish_2_selector(Counter *counter) {
-  Value best_value = minimumValue;
+  Score best_score = minimumScore;
   Hand best_hand(not_found), hand;
   auto &level = hand.level, &length = hand.length;
   auto &size = hand.size, &cosize = hand.cosize;
@@ -13,14 +13,14 @@ Hand selfish_2_selector(Counter *counter) {
   for (level = 0; level != selfishThresholdLevel; ++level) {
     if ((*counter)[level] == 3) {
       (*counter)[level] -= size;
-      update(&best_value, &best_hand, hand, counter);
+      update(&best_score, &best_hand, hand, counter);
       for (cosize = 1; cosize != 3; ++cosize) {
         vector<Level> attachables;
         copy_if(allLevels.begin(), allLevels.end(), back_inserter(attachables), [&](Level l){ return (*counter)[l] >= cosize && l != level; });
         for (const auto &combination : combinations(attachables, length)) {
           attached = combination;
           for (const auto &l : combination) (*counter)[l] -= cosize;
-          update(&best_value, &best_hand, hand, counter);
+          update(&best_score, &best_hand, hand, counter);
           for (const auto &l : combination) (*counter)[l] += cosize;
         }
       }
@@ -35,7 +35,7 @@ Hand selfish_2_selector(Counter *counter) {
       ++continuous_number[0];
       for (length = 5; length <= continuous_number[0]; ++length) {
         for (unsigned i = 0; i != length; ++i) --(*counter)[level - i];
-        update(&best_value, &best_hand, hand, counter);
+        update(&best_score, &best_hand, hand, counter);
         for (unsigned i = 0; i != length; ++i) ++(*counter)[level - i];
       }
     } else continuous_number[0] = 0;
