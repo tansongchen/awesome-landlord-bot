@@ -24,7 +24,7 @@ TEST_CASE("Attack-only Non-recursive Test", "[0]") {
     // on attacking it gives all cards;
     REQUIRE(attack(&counter) == hand);
     // on evaluating it gives the value
-    REQUIRE(evaluate(&counter) == value);
+    REQUIRE(evaluate(&counter) == Pair(value, 1));
   }
 
   SECTION("Case 2") {
@@ -33,7 +33,7 @@ TEST_CASE("Attack-only Non-recursive Test", "[0]") {
     // on attacking it gives all cards;
     REQUIRE(attack(&counter) == rocket);
     // on evaluating it gives the value
-    REQUIRE(evaluate(&counter) == value);
+    REQUIRE(evaluate(&counter) == Pair(value, 2));
   }
 
   SECTION("Case 3") {
@@ -42,7 +42,7 @@ TEST_CASE("Attack-only Non-recursive Test", "[0]") {
     // on attacking it gives the smallest Solo;
     REQUIRE(attack(&counter) == Hand{"T"});
     // on evaluating it gives the sum of Solo value
-    REQUIRE(evaluate(&counter) == value);
+    REQUIRE(evaluate(&counter) == Pair(value, 4));
   }
 
   SECTION("Case 4") {
@@ -51,6 +51,6 @@ TEST_CASE("Attack-only Non-recursive Test", "[0]") {
     // on attacking it gives all cards;
     REQUIRE(attack(&counter) == Hand{"3333"});
     // on evaluating it gives the sum of Solo value
-    REQUIRE(evaluate(&counter) == value);
+    REQUIRE(evaluate(&counter) == Pair(value, 1));
   }
 }

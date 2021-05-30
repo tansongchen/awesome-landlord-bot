@@ -11,7 +11,17 @@ using namespace std;
 
 // Value of a Hand or a Counter
 using Value = short;
-constexpr Value minimumValue = -32768;
+
+using Score = short;
+constexpr Score minimumScore = -32768;
+
+struct Pair {
+  Value value;
+  unsigned short round;
+  Pair(Value value = 0, unsigned short round = 0);
+  Score score() const;
+  bool operator==(const Pair &rhs) const;
+};
 
 // Interface for evaluating a hand : Hand -> Value
 using Evaluator = Value (*)(const Hand &);
@@ -30,7 +40,7 @@ extern vector<DefendingSelector> defending_sequence;
 /* Core workflow part */
 
 // Evaluate a Counter representing the cards that a player has
-Value evaluate(Counter *counter);
+Pair evaluate(Counter *counter);
 // Suggest a bidding value according to `evaluate`
 unsigned suggest(Counter *counter);
 // Actively play cards
@@ -40,7 +50,7 @@ Hand defend(Counter *counter, const Hand &last_hand);
 
 // If the value of the `counter` is better than the `best_value`, update
 // `best_hand` with `hand`
-void update(Value *best_value, Hand *best_hand, const Hand &hand,
+void update(Score *best_score, Hand *best_hand, const Hand &hand,
             Counter *counter);
 
 Value simple_evaluator(const Hand &hand);

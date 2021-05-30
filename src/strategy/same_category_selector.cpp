@@ -5,7 +5,7 @@
 
 Hand same_category_selector(Counter *counter, const Hand &last_hand) {
   Level count = 0;
-  Value best_value = minimumValue;
+  Score best_score = minimumScore;
   Hand best_hand(not_found), hand;
   Level &level = hand.level, &length = hand.length;
   Count &size = hand.size, &cosize = hand.cosize;
@@ -39,11 +39,11 @@ Hand same_category_selector(Counter *counter, const Hand &last_hand) {
           for (const auto &combination : combinations(attachables, cosize)) {
             attached = combination;
             for (const auto &l : combination) (*counter)[l] -= cosize;
-            update(&best_value, &best_hand, hand, counter);
+            update(&best_score, &best_hand, hand, counter);
             for (const auto &l : combination) (*counter)[l] += cosize;
           }
         } else {
-          update(&best_value, &best_hand, hand, counter);
+          update(&best_score, &best_hand, hand, counter);
         }
         for (Level i = 0; i != length; ++i) (*counter)[level - i] += size;
       }

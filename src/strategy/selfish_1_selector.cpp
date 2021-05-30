@@ -3,7 +3,7 @@
 #include <algorithm>
 
 Hand selfish_1_selector(Counter *counter) {
-  Value best_value;
+  Score best_score = minimumScore;
   Hand best_hand(not_found), hand;
   auto &level = hand.level, &length = hand.length;
   auto &size = hand.size, &cosize = hand.cosize;
@@ -19,7 +19,7 @@ Hand selfish_1_selector(Counter *counter) {
         for (const auto &combination : combinations(attachables, length * 2)) {
           attached = combination;
           for (const auto &l : combination) (*counter)[l] -= cosize;
-          update(&best_value, &best_hand, hand, counter);
+          update(&best_score, &best_hand, hand, counter);
           for (const auto &l : combination) (*counter)[l] += cosize;
         }
       }
@@ -34,7 +34,7 @@ Hand selfish_1_selector(Counter *counter) {
       size = 2; cosize = 0;
       for (length = 3; length <= continuous_number[0]; ++length) {
         for (unsigned i = 0; i != length; ++i) (*counter)[level - i] -= 2;
-        update(&best_value, &best_hand, hand, counter);
+        update(&best_score, &best_hand, hand, counter);
         for (unsigned i = 0; i != length; ++i) (*counter)[level - i] += 2;
       }
       if ((*counter)[level] >= 3) {
@@ -48,7 +48,7 @@ Hand selfish_1_selector(Counter *counter) {
             for (auto &combination : combinations(attachables, length)) {
               attached = combination;
               for (auto &l : combination) (*counter)[l] -= cosize;
-              update(&best_value, &best_hand, hand, counter);
+              update(&best_score, &best_hand, hand, counter);
               for (auto &l : combination) (*counter)[l] += cosize;
             }
           }

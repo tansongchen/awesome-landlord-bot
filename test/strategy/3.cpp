@@ -27,7 +27,7 @@ TEST_CASE("Full Recursive Test", "[3]") {
   SECTION("Case 1") {
     Counter counter{"44KKKK"};
     Hand last_hand{"3333"};
-    REQUIRE(evaluate(&counter) == (10 + 7) + (1 - 7));
+    REQUIRE(evaluate(&counter) == Pair((10 + 7) + (1 - 7), 2));
     REQUIRE(defend(&counter, last_hand) == Hand{"KKKK"});
   }
   SECTION("Case 2") {
@@ -43,19 +43,19 @@ TEST_CASE("Full Recursive Test", "[3]") {
   SECTION("Case 4") {
     Counter counter{"8JK2BR"};
     Hand last_hand{"3333"};
-    REQUIRE(evaluate(&counter) == 27);
+    REQUIRE(evaluate(&counter) == Pair(27, 5));
     REQUIRE(defend(&counter, last_hand) == rocket);
   }
   SECTION("Case 5") {
     Counter counter{"333322"};
     Hand last_hand{"6665"};
-    REQUIRE(evaluate(&counter) == (0 + 7) + 5);
+    REQUIRE(evaluate(&counter) == Pair((0 + 7) + 5, 2));
     REQUIRE(defend(&counter, last_hand) == Hand{"3333"});
   }
   SECTION("Case 6") {
     Counter counter{"888822"};
     Hand last_hand{"6665"};
-    REQUIRE(evaluate(&counter) == (5 + 7) + 5);
+    REQUIRE(evaluate(&counter) == Pair((5 + 7) + 5, 2));
     REQUIRE(defend(&counter, last_hand) == Hand{"8888"});
   }
   SECTION("Case 7") {

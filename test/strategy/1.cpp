@@ -25,14 +25,14 @@ TEST_CASE("Full Non-recursive Test", "[1]") {
   SECTION("Case 1") {
     Counter counter{"3333"};
     Hand last_hand{"4445"};
-    REQUIRE(evaluate(&counter) == 7);
+    REQUIRE(evaluate(&counter) == Pair(7, 1));
     REQUIRE(defend(&counter, last_hand) == Hand(counter));
   }
 
   SECTION("Case 2") {
     Counter counter{"RB"};
     Hand last_hand{"3333"};
-    REQUIRE(evaluate(&counter) == 20);
+    REQUIRE(evaluate(&counter) == Pair(20, 1));
     REQUIRE(defend(&counter, last_hand) == rocket);
   }
 }
