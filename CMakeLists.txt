@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.14)
 
 project(
   AwesomeLandlordBot
@@ -14,3 +14,13 @@ include(CTest)
 
 add_subdirectory(src)
 add_subdirectory(test)
+include(FetchContent)
+
+FetchContent_Declare(
+  Amalgamate
+  GIT_REPOSITORY https://github.com.cnpmjs.org/vinniefalco/Amalgamate.git
+)
+FetchContent_MakeAvailable(Amalgamate)
+
+add_executable(amalgamate ${amalgamate_SOURCE_DIR}/Amalgamate.cpp ${amalgamate_SOURCE_DIR}/juce_core_amalgam.cpp)
+target_link_libraries(amalgamate pthread dl)

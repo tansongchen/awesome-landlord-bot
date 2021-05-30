@@ -43,8 +43,8 @@ extern vector<int> bidInput;
 // 输入
 void read();
 // 输出叫分（0, 1, 2, 3 四种之一）
-void bid(int value);
+void bid(int bidValue, short value, unsigned short round);
 // 输出打牌决策
-void play(const set<Card> &group);
+void play(const set<Card> &group, const Hand &last_hand, const Hand &hand);
 
 #endif

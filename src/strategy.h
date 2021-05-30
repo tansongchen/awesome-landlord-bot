@@ -41,8 +41,6 @@ extern vector<DefendingSelector> defending_sequence;
 
 // Evaluate a Counter representing the cards that a player has
 Pair evaluate(Counter *counter);
-// Suggest a bidding value according to `evaluate`
-unsigned suggest(Counter *counter);
 // Actively play cards
 Hand attack(Counter *counter);
 // Passively play cards
@@ -50,7 +48,7 @@ Hand defend(Counter *counter, const Hand &last_hand);
 
 // If the value of the `counter` is better than the `best_value`, update
 // `best_hand` with `hand`
-void update(Score *best_score, Hand *best_hand, const Hand &hand,
+void update(Pair *best_pair, Hand *best_hand, const Hand &hand,
             Counter *counter);
 
 Value simple_evaluator(const Hand &hand);

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 #include "jsoncpp/json.h"
 
@@ -104,17 +105,30 @@ void read() {
   }
 }
 
-void bid(int value) {
-  Json::Value result;
-  result["response"] = value;
+void bid(int bidValue, short value, unsigned short round) {
+  Json::Value result, debug(Json::objectValue);
+  result["response"] = bidValue;
+
+  debug["pair.score()"] = value - 7 * round;
+  debug["pair.value"] = value;
+  debug["pair.round"] = round;
+  result["debug"] = debug;
 
   Json::FastWriter writer;
   cout << writer.write(result) << endl;
 }
 
-void play(const set<Card> &group) {
-  Json::Value result, response(Json::arrayValue);
+void play(const set<Card> &group, const Hand &last_hand, const Hand &hand) {
+  Json::Value result, response(Json::arrayValue), debug(Json::objectValue);
+
+  for (const auto &card : group) {
+    response.append(card);
+  }
   result["response"] = response;
+
+  debug["last_hand"] = static_cast<string>(last_hand);
+  debug["hand"] = static_cast<string>(hand);
+  result["debug"] = debug;
 
   Json::FastWriter writer;
   cout << writer.write(result) << endl;

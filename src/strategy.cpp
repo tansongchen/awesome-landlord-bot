@@ -16,22 +16,17 @@ bool Pair::operator==(const Pair &rhs) const {
   return value == rhs.value && round == rhs.round;
 }
 
-void update(Score *best_score, Hand *best_hand, const Hand &hand,
+void update(Pair *best_pair, Hand *best_hand, const Hand &hand,
             Counter *counter) {
   Pair pair = evaluate(counter);
-  if (pair.score() > *best_score) {
-    *best_score = pair.score();
+  if (pair.score() > best_pair->score()) {
+    *best_pair = pair;
     *best_hand = Hand(hand);
   }
 }
 
-unsigned suggest(Counter *counter) {
-  Score score = evaluate(counter).score();
-  return score >= 20 ? 3 : score >= 15 ? 2 : score >= 10 ? 1 : 0;
-}
-
 Pair evaluate(Counter *counter) {
-  if (*counter == empty) return Pair();
+  if (*counter == Counter()) return Pair();
   Hand hand = attack(counter);
   for (Level i = 0; i != hand.length; ++i)
     (*counter)[hand.level - i] -= hand.size;

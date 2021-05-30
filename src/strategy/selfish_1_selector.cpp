@@ -3,7 +3,7 @@
 #include <algorithm>
 
 Hand selfish_1_selector(Counter *counter) {
-  Score best_score = minimumScore;
+  Pair best_pair(-10000, 0);
   Hand best_hand(not_found), hand;
   auto &level = hand.level, &length = hand.length;
   auto &size = hand.size, &cosize = hand.cosize;
@@ -19,7 +19,7 @@ Hand selfish_1_selector(Counter *counter) {
         for (const auto &combination : combinations(attachables, length * 2)) {
           attached = combination;
           for (const auto &l : combination) (*counter)[l] -= cosize;
-          update(&best_score, &best_hand, hand, counter);
+          update(&best_pair, &best_hand, hand, counter);
           for (const auto &l : combination) (*counter)[l] += cosize;
         }
       }
@@ -28,19 +28,19 @@ Hand selfish_1_selector(Counter *counter) {
   }
   // Double Chain, Trio Chain, Trio with Solo Chain, Trio with Pair Chain
   array<Level, 3> continuous_number{0, 0, 0};
-  for (level = 0; level != maximumLevel; ++level) {
+  for (level = 0; level != maximumChainableLevel; ++level) {
     if ((*counter)[level] >= 2) {
       ++continuous_number[1];
       size = 2; cosize = 0;
-      for (length = 3; length <= continuous_number[0]; ++length) {
+      for (length = 3; length <= continuous_number[1]; ++length) {
         for (unsigned i = 0; i != length; ++i) (*counter)[level - i] -= 2;
-        update(&best_score, &best_hand, hand, counter);
+        update(&best_pair, &best_hand, hand, counter);
         for (unsigned i = 0; i != length; ++i) (*counter)[level - i] += 2;
       }
       if ((*counter)[level] >= 3) {
         size = 3;
         ++continuous_number[2];
-        for (length = 2; length <= continuous_number[1]; ++length) {
+        for (length = 2; length <= continuous_number[2]; ++length) {
           for (unsigned i = 0; i != length; ++i) (*counter)[level - i] -= 3;
           for (cosize = 0; cosize != 3; ++cosize) {
             vector<Level> attachables;
@@ -48,7 +48,7 @@ Hand selfish_1_selector(Counter *counter) {
             for (auto &combination : combinations(attachables, length)) {
               attached = combination;
               for (auto &l : combination) (*counter)[l] -= cosize;
-              update(&best_score, &best_hand, hand, counter);
+              update(&best_pair, &best_hand, hand, counter);
               for (auto &l : combination) (*counter)[l] += cosize;
             }
           }

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -95,6 +96,10 @@ Hand::Hand(Level _level, Level _length, Count _size, Count _cosize,
 
 Hand::Hand(const Counter &counter)
     : level(0), length(1), size(1), cosize(0), attached{} {
+  if (counter == Counter()) {
+    *this = pass;
+    return;
+  }
   const auto it1 = max_element(counter.rbegin(), counter.rend());
   size = *it1;
   level = redJokerLevel - (it1 - counter.rbegin());
@@ -135,4 +140,34 @@ ostream &operator<<(ostream &os, const Hand &hand) {
      << ", Size: " << hand.size << ", Cosize: " << hand.cosize
      << ", Attached: " << hand.attached;
   return os;
+}
+
+Hand::operator string() const {
+  ostringstream os;
+  os << "Level: " << level << ", Length: " << length
+     << ", Size: " << size << ", Cosize: " << cosize
+     << ", Attached: " << attached;
+  return os.str();
+}
+
+bool Hand::is_valid() const {
+  bool valid;
+  switch (size) {
+    case 1:
+      valid = *this == rocket ||
+              cosize == 0 && (length == 1 || length >= 5);
+      break;
+    case 2:
+      valid = cosize == 0 && (length == 1 || length >= 3);
+      break;
+    case 3:
+      valid = cosize <= 2 && attached.size() == length;
+      break;
+    case 4:
+      valid = cosize <= 2 && attached.size() == length * 2;
+      break;
+    default: throw runtime_error("Attack with invalid Counter!");
+  }
+  if (length > 1 && !(*this == rocket)) valid &= (level < maximumChainableLevel);
+  return valid;
 }

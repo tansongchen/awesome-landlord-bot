@@ -5,7 +5,8 @@
 
 Hand same_category_selector(Counter *counter, const Hand &last_hand) {
   Level count = 0;
-  Score best_score = minimumScore;
+  Pair best_pair = evaluate(counter);
+  best_pair.round += 1;
   Hand best_hand(not_found), hand;
   Level &level = hand.level, &length = hand.length;
   Count &size = hand.size, &cosize = hand.cosize;
@@ -13,6 +14,8 @@ Hand same_category_selector(Counter *counter, const Hand &last_hand) {
   length = last_hand.length;
   size = last_hand.size;
   cosize = last_hand.cosize;
+
+  if (last_hand == rocket) return not_found;
 
   // last hand is bomb
   if (length == 1 && size == 4 && cosize == 0) {
@@ -22,7 +25,8 @@ Hand same_category_selector(Counter *counter, const Hand &last_hand) {
     return not_found;
   }
   // last hand is not bomb, I do not split bomb
-  for (level = last_hand.level - length + 2; level != maximumLevel; ++level) {
+  Level maximum = length > 1 ? maximumChainableLevel : maximumLevel;
+  for (level = last_hand.level - length + 2; level != maximum; ++level) {
     if ((*counter)[level] < size || (*counter)[level] == 4)
       count = 0;
     else {
@@ -36,14 +40,15 @@ Hand same_category_selector(Counter *counter, const Hand &last_hand) {
                     return (*counter)[l] >= cosize && (*counter)[l] < 4 &&
                            (l > level || l <= level - length);
                   });
-          for (const auto &combination : combinations(attachables, cosize)) {
+          auto k = size == 4 ? 2 * length : length;
+          for (const auto &combination : combinations(attachables, k)) {
             attached = combination;
             for (const auto &l : combination) (*counter)[l] -= cosize;
-            update(&best_score, &best_hand, hand, counter);
+            update(&best_pair, &best_hand, hand, counter);
             for (const auto &l : combination) (*counter)[l] += cosize;
           }
         } else {
-          update(&best_score, &best_hand, hand, counter);
+          update(&best_pair, &best_hand, hand, counter);
         }
         for (Level i = 0; i != length; ++i) (*counter)[level - i] += size;
       }
