@@ -13,3 +13,6 @@ add_subdirectory(strategy)
 
 add_executable(main main.cpp)
 target_link_libraries(main libcard libstrategy)
+
+add_executable(sample sample.cpp)
+target_link_libraries(sample libcard libstrategy)

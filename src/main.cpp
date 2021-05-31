@@ -21,10 +21,10 @@ int main() {
   Counter counter(myCards);
   if (stage == Stage::BIDDING) {
     Pair pair = evaluate(&counter);
-    Score score = pair.score();
-    int suggestion = score >= 20 ? 3 : score >= 15 ? 2 : score >= 10 ? 1 : 0;
+    Value value = pair.value;
+    int suggestion = value >= 15 ? 3 : value >= 10 ? 2 : value >= 5 ? 1 : 0;
     int bid_value =
-        bidInput.empty() || suggestion > bidInput.back() ? bid_value : 0;
+        bidInput.empty() || suggestion > bidInput.back() ? suggestion : 0;
     bid(bid_value, pair.value, pair.round);
   } else if (stage == Stage::PLAYING) {
     Counter last_hand_counter(lastValidCombo);
