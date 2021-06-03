@@ -140,13 +140,13 @@ void read() {
   }
 }
 
-void bid(int bidValue, short value, unsigned short turn_) {
+void bid(int bidValue, short value, unsigned short turn) {
   Json::Value result, debug(Json::objectValue);
   result["response"] = bidValue;
 
-  debug["pair.score()"] = value - 7 * turn_;
+  debug["pair.score()"] = value - 7 * turn;
   debug["pair.value"] = value;
-  debug["pair.turn_"] = turn_;
+  debug["pair.turn"] = turn;
   result["debug"] = debug;
 
   Json::FastWriter writer;
