@@ -1,6 +1,7 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
+#include <array>
 #include <set>
 #include <vector>
 
@@ -22,7 +23,7 @@ extern set<Card> myCards;
 // 地主明示的牌有哪些
 extern set<Card> landlordPublicCards;
 // 大家从最开始到现在都出过什么
-extern vector<vector<Card>> whatTheyPlayed[PLAYER_COUNT];
+extern vector<set<Card>> whatTheyPlayed[PLAYER_COUNT];
 // 当前要出的牌需要大过谁
 extern set<Card> lastValidCombo;
 // 大家还剩多少牌
@@ -37,6 +38,12 @@ extern int landlordBid;
 extern Stage stage;
 // 自己的第一回合收到的叫分决策
 extern vector<int> bidInput;
+// 剩余多少未知牌(删去自己所有初始牌，删去公共牌，删去对方的出牌)
+extern array<Count, maximumLevel> unknown = {4, 4, 4, 4, 4, 4, 4, 4,
+                                             4, 4, 4, 4, 4, 1, 1};
+// player i cannot outplay d(i, t) if he only selects the same combination type
+// player, length, size, cosize -> min(level)
+extern map<vector<unsigned short>, Level> outplay;
 
 /* 输入输出 */
 
