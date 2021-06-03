@@ -35,8 +35,9 @@ void read() {
              [0u];  // 下标需要是 unsigned，可以通过在数字后面加u来做到
     auto own = firstRequest["own"];
     for (unsigned i = 0; i < own.size(); i++) {
-      myCards.insert(own[i].asInt());
-      unknown[card_to_level(own[i])]--;
+      Card card = own[i].asInt();
+      myCards.insert(card);
+      unknown[card_to_level(card)]--;
     }
     if (!firstRequest["bid"].isNull()) {
       // 如果还可以叫分，则记录叫分
@@ -78,8 +79,8 @@ void read() {
     // 逐次恢复局面到当前
     int howManyPass = 0;
     for (int p = 0; p < 2; p++) {
-      short player = whoInHistory[p];  // 是谁出的牌
-      auto playerAction = history[p];  // 出的哪些牌
+      unsigned short player = whoInHistory[p];  // 是谁出的牌
+      auto playerAction = history[p];           // 出的哪些牌
       set<Card> playedCards;
       // 循环枚举这个人出的所有牌(本轮次)
       for (unsigned _ = 0; _ < playerAction.size(); _++) {
@@ -90,54 +91,52 @@ void read() {
       whatTheyPlayed[player].push_back(playedCards);  // 记录这段历史
       cardRemaining[player] -= playerAction.size();   // 所有轮次的记录
 
-      // 在出牌一轮时，才寻找未接上的牌(未出 或 回应 炸弹火箭)
-      // 此处炸弹仅按照size == 4考虑，其他案例出现几率极低
-      if (i > 2 &&
-          (playedCards.empty() || playedCards == {blackJoker, redJoker} ||
-           Hand(Counter(playedCards)).size == 4)) {
+      // 在出牌一轮时，才寻找未接上的牌(未出 或 回应 炸弹/火箭)
+      Counter counter(playedCards);
+      Hand hand(counter);
+      if (i > 2 && (playedCards.empty() || hand == rocket ||
+                    (hand.length == 1 && hand.size == 4))) {
         int outplayer[] = {(player - 2 + PLAYER_COUNT) % PLAYER_COUNT,
                            (player - 1 + PLAYER_COUNT) % PLAYER_COUNT};
+        set<Card> lastValidCombo_;
         for (short q = 1; q >= 0; q--) {
           set<Card> playerAction = whatTheyPlayed[outplayer[q]].back();
           if (!playerAction.empty()) {
-            set<Card> lastValidCombo_;
-            for (unsigned _ = 0; _ < playerAction.size();
-                 _++)  // 循环枚举这个人出的所有牌(本轮次)
-              lastValidCombo_.insert(
-                  Card(playerAction[_].asInt()));  // 这里是出的一张牌
+            lastValidCombo_ = playerAction;
             break;
           }
         }
         Counter counter(lastValidCombo_);
-        vector<unsigned short> v = {player, counter.length, counter.size,
-                                    counter.cosize};
+        Hand hand(counter);
+        vector<unsigned short> v = {player, hand.length, hand.size,
+                                    hand.cosize};
         // 实时更新(取level的最小值)
-        if (outplay.find(v) == outplay.end() || outplay[v] > counter.level)
-          outplay.insert(make_pair(v, counter.level));
+        if (outplay.find(v) == outplay.end() || outplay[v] > hand.level)
+          outplay.insert(make_pair(v, hand.level));
       }
+
+      if (playerAction.size() == 0)
+        howManyPass++;
+      else
+        lastValidCombo = playedCards;
     }
 
-    if (playerAction.size() == 0)
-      howManyPass++;
-    else
-      lastValidCombo = playedCards;
-  }
+    if (howManyPass == 2) lastValidCombo = set<Card>();
 
-  if (howManyPass == 2) lastValidCombo = set<Card>();
-
-  if (i < turn - 1) {
-    // 还要恢复自己曾经出过的牌
-    auto playerAction = input["responses"][i];  // 出的哪些牌
-    set<Card> playedCards;
-    for (unsigned _ = 0; _ < playerAction.size();
-         _++)  // 循环枚举自己出的所有牌
-    {
-      int card = playerAction[_].asInt();  // 这里是自己出的一张牌
-      myCards.erase(card);                 // 从自己手牌中删掉
-      playedCards.insert(card);
+    if (i < turn - 1) {
+      // 还要恢复自己曾经出过的牌
+      auto playerAction = input["responses"][i];  // 出的哪些牌
+      set<Card> playedCards;
+      for (unsigned _ = 0; _ < playerAction.size();
+           _++)  // 循环枚举自己出的所有牌
+      {
+        int card = playerAction[_].asInt();  // 这里是自己出的一张牌
+        myCards.erase(card);                 // 从自己手牌中删掉
+        playedCards.insert(card);
+      }
+      whatTheyPlayed[myPosition].push_back(playedCards);  // 记录这段历史
+      cardRemaining[myPosition] -= playerAction.size();
     }
-    whatTheyPlayed[myPosition].push_back(playedCards);  // 记录这段历史
-    cardRemaining[myPosition] -= playerAction.size();
   }
 }
 
