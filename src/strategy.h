@@ -55,9 +55,8 @@ Value simple_evaluator(const Hand &hand);
 // Attack
 Hand one_shot_selector(Counter *counter);
 Hand attacking_absolute_dominant_selector(Counter *counter);
-Hand selfish_1_selector(Counter *counter);
-Hand selfish_2_selector(Counter *counter);
-Hand minimal_selector(Counter *counter);
+Hand selfish_selector(Counter *counter);
+Hand normal_selector(Counter *counter);
 Hand attacking_bomb_rocket_selector(Counter *counter);
 Hand solo_selector(Counter *counter);
 // Defend

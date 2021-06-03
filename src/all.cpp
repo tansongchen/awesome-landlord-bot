@@ -4,9 +4,8 @@
 #include "strategy/simple_evaluator.cpp"
 #include "strategy/one_shot_selector.cpp"
 #include "strategy/attacking_absolute_dominant_selector.cpp"
-#include "strategy/selfish_1_selector.cpp"
-#include "strategy/selfish_2_selector.cpp"
-#include "strategy/minimal_selector.cpp"
+#include "strategy/selfish_selector.cpp"
+#include "strategy/normal_selector.cpp"
 #include "strategy/attacking_bomb_rocket_selector.cpp"
 #include "strategy/solo_selector.cpp"
 #include "strategy/defending_absolute_dominant_selector.cpp"
@@ -14,3 +13,4 @@
 #include "strategy/defending_bomb_rocket_selector.cpp"
 #include "strategy/pass_selector.cpp"
 #include "main.cpp"
+\

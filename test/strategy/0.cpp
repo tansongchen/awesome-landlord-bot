@@ -12,7 +12,6 @@ TEST_CASE("Attack-only Non-recursive Test", "[0]") {
   attacking_sequence = {
     one_shot_selector,
     attacking_absolute_dominant_selector,
-    minimal_selector,
     attacking_bomb_rocket_selector,
     solo_selector // when Trio is not pruned during selfish_2_selector, must include this as a fallback approach
   };
@@ -38,11 +37,11 @@ TEST_CASE("Attack-only Non-recursive Test", "[0]") {
 
   SECTION("Case 3") {
     Counter counter{"TKK22R"};
-    Value value = 0 + 3 + 5 + 7;
+    Value value = 0 + 3 + 3 + 5 + 5 + 7;
     // on attacking it gives the smallest Solo;
     REQUIRE(attack(&counter) == Hand{"T"});
     // on evaluating it gives the sum of Solo value
-    REQUIRE(evaluate(&counter) == Pair(value, 4));
+    REQUIRE(evaluate(&counter) == Pair(value, 6));
   }
 
   SECTION("Case 4") {

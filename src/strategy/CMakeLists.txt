@@ -5,9 +5,8 @@ add_library(
   # AttackingSelector
   one_shot_selector.cpp
   attacking_absolute_dominant_selector.cpp
-  selfish_1_selector.cpp
-  selfish_2_selector.cpp
-  minimal_selector.cpp
+  selfish_selector.cpp
+  normal_selector.cpp
   attacking_bomb_rocket_selector.cpp
   solo_selector.cpp
   # DefendingSelector

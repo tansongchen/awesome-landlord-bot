@@ -12,7 +12,7 @@ TEST_CASE("Full Non-recursive Test", "[1]") {
   attacking_sequence = {
     one_shot_selector,
     attacking_absolute_dominant_selector,
-    minimal_selector,
+    normal_selector,
     attacking_bomb_rocket_selector,
     solo_selector // when Trio is not pruned during selfish_2_selector, must include this as a fallback approach
   };

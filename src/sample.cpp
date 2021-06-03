@@ -7,17 +7,18 @@
 #include <string>
 #include <iterator>
 #include <algorithm>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 int main() {
   evaluator = simple_evaluator;
   attacking_sequence = {
     one_shot_selector,
     attacking_absolute_dominant_selector,
-    selfish_1_selector,
-    selfish_2_selector,
-    minimal_selector,
+    selfish_selector,
+    normal_selector,
     attacking_bomb_rocket_selector
   };
   defending_sequence = {
@@ -30,14 +31,15 @@ int main() {
   vector<Card> allCards = {};
   for (Card card = 0; card != 54; ++card) allCards.push_back(card);
   vector<int> stats(70);
-  for (unsigned i = 0; i != 10000; ++i) {
+  for (unsigned i = 0; i != 1000; ++i) {
+    auto start = high_resolution_clock::now();
     random_shuffle(allCards.begin(), allCards.end());
     Group myCards(allCards.begin(), allCards.begin() + 17);
     Counter counter(myCards);
     Pair pair = evaluate(&counter);
-    ++stats[pair.value + 25];
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop - start);
+    cout << pair.value << '\t' << pair.round << '\t' << duration.count() << endl;
+    // ++stats[pair.value + 25];
   }
-//   Counter counter({0, 5, 9, 11, 12, 13, 28, 36, 38, 41, 42, 43, 45, 48, 49, 51, 52});
-//   evaluate(&counter);
-
 }

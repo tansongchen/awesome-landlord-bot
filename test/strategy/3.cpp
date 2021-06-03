@@ -12,9 +12,8 @@ TEST_CASE("Full Recursive Test", "[3]") {
   attacking_sequence = {
     one_shot_selector,
     attacking_absolute_dominant_selector,
-    selfish_1_selector,
-    selfish_2_selector,
-    minimal_selector,
+    selfish_selector,
+    normal_selector,
     attacking_bomb_rocket_selector
   };
   defending_sequence = {
