@@ -9,6 +9,8 @@
 
 using namespace std;
 
+constexpr unsigned playerCount = 3;
+
 // Representing 54 cards with 0 ~ 53
 using Card = unsigned short;
 constexpr Card blackJoker = 52;
@@ -48,6 +50,7 @@ using Count = unsigned short;
 struct Counter : public array<Count, maximumLevel> {
   Counter();
   // Construct a Counter from a initializer_list
+  Counter(initializer_list<Count> il);
   Counter(const map<Level, Count> &m);
   // Construct a Counter from a Group
   Counter(const Group &group);
@@ -57,6 +60,12 @@ struct Counter : public array<Count, maximumLevel> {
   // the information of suits, a context myCards is needed
   Group get_group(const Group &myCards) const;
   friend ostream &operator<<(ostream &os, const Counter &counter);
+};
+
+struct Category {
+  Level length;
+  Count size;
+  Count cosize;
 };
 
 // Parametric and abstract representation of several Cards played in one turn
@@ -83,6 +92,9 @@ struct Hand {
   friend ostream &operator<<(ostream &os, const Hand &hand);
   operator string() const;
   bool is_valid() const;
+  bool is_bomb() const;
+  bool is_pass() const;
+  bool is_rocket() const;
 };
 
 // a dummy Hand that means pass
@@ -94,5 +106,19 @@ const Hand rocket(redJokerLevel, 2, 1);
 
 // choose k Levels from a bunch of Levels
 vector<Combination> combinations(const vector<Level> &universe, unsigned k);
+
+// Value of a Hand or a Counter
+using Value = short;
+
+using Score = short;
+constexpr Score minimumScore = -32768;
+
+struct Pair {
+  Value value;
+  unsigned short round;
+  Pair(Value _value = 0, unsigned short _round = 0);
+  Score score() const;
+  bool operator==(const Pair &rhs) const;
+};
 
 #endif

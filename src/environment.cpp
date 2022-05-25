@@ -3,139 +3,84 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <array>
 
 #include "jsoncpp/json.h"
 
 Stage stage = Stage::BIDDING;
-set<Card> landlordPublicCards;
-vector<set<Card>> whatTheyPlayed[PLAYER_COUNT];
-set<Card> lastValidCombo;
-short cardRemaining[PLAYER_COUNT] = {17, 17, 17};
-int landlordPosition = -1;
-int landlordBid = -1;
-vector<int> bidInput;
-int myPosition;
-set<Card> myCards;
-array<Count, maximumLevel> unknown = {4, 4, 4, 4, 4, 4, 4, 4,
-                                      4, 4, 4, 4, 4, 1, 1};
-map<vector<unsigned short>, Level> outplay;
+Group public_card;
+unsigned landlord = -1;
+unsigned pos = -1;
+unsigned final_bid = -1;
+array<unsigned, playerCount> history_layout = {-1, -1, -1};
+vector<unsigned> bidding_history;
+vector<Group> playing_history;
+Group own;
+array<unsigned, playerCount> remaining_cards = {17, 17, 17};
+Counter unobserved{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1};
+unsigned last_player = -1;
+Hand last_hand = pass;
+
+template <typename Iterable>
+Group iterable_to_group(const Iterable &iterable) {
+  Group group;
+  for (unsigned _ = 0; _ < iterable.size(); _++) {
+    Card card = iterable[_].asInt();
+    group.insert(card);
+  }
+  return group;
+}
 
 void read() {
-  // 读入输入（平台上的输入是单行）
   string line;
   getline(cin, line);
   Json::Value input;
   Json::Reader reader;
   reader.parse(line, input);
+  auto requests = input["requests"];
+  auto responses = input["responses"];
 
-  // 首先处理第一回合，得知自己是谁、有哪些牌
+  // Bidding Request
   {
-    auto firstRequest =
-        input["requests"]
-             [0u];  // 下标需要是 unsigned，可以通过在数字后面加u来做到
-    auto own = firstRequest["own"];
-    for (unsigned i = 0; i < own.size(); i++) {
-      Card card = own[i].asInt();
-      myCards.insert(card);
-      unknown[card_to_level(card)]--;
-    }
-    if (!firstRequest["bid"].isNull()) {
-      // 如果还可以叫分，则记录叫分
-      auto bidHistory = firstRequest["bid"];
-      myPosition = bidHistory.size();
-      for (unsigned i = 0; i < bidHistory.size(); i++)
-        bidInput.push_back(bidHistory[i].asInt());
+    auto bidding_request = requests[0u];
+    own = iterable_to_group(bidding_request["own"]);
+    for (const auto &card : own) --unobserved[card_to_level(card)];
+    // if the bidding process didn't terminate before me
+    if (!bidding_request["bid"].isNull()) {
+      auto _bidding_history = bidding_request["bid"];
+      for (unsigned i = 0; i < _bidding_history.size(); i++)
+        bidding_history.push_back(_bidding_history[i].asInt());
     }
   }
 
-  // history里第一项（上上家）和第二项（上家）分别是谁的决策
-  int whoInHistory[] = {(myPosition - 2 + PLAYER_COUNT) % PLAYER_COUNT,
-                        (myPosition - 1 + PLAYER_COUNT) % PLAYER_COUNT};
-
-  int turn = input["requests"].size();
-  auto request = input["requests"][0];
-  auto llpublic = request["publiccard"];
-  if (!llpublic.isNull()) {
-    // 第一次得知公共牌、地主叫分和地主是谁
-    landlordPosition = request["landlord"].asInt();
-    landlordBid = request["finalbid"].asInt();
-    myPosition = request["pos"].asInt();
-    cardRemaining[landlordPosition] += llpublic.size();
-    for (unsigned j = 0; j < llpublic.size(); j++) {
-      int card = llpublic[j].asInt();
-      landlordPublicCards.insert(card);
-      unknown[card_to_level(card)]--;
-      if (landlordPosition == myPosition) myCards.insert(card);
-    }
-  }
-
-  for (int i = 0; i < turn; i++) {
-    auto request = input["requests"][i];
-    auto history = request["history"];  // 每个历史中有上家和上上家出的牌
-    if (history.isNull()) continue;
-
+  // First Playing Request
+  if (requests.size() > 1) {
     stage = Stage::PLAYING;
+    auto first_playing_request = requests[1u];
+    public_card = iterable_to_group(first_playing_request["publiccard"]);
+    landlord = first_playing_request["landlord"].asInt();
+    final_bid = first_playing_request["finalbid"].asInt();
+    pos = first_playing_request["pos"].asInt();
+    remaining_cards[landlord] += public_card.size();
+    if (landlord == pos) own.insert(public_card.begin(), public_card.end());
+    history_layout = {(pos + 1) % playerCount, (pos + 2) % playerCount, pos};
+  }
 
-    // 逐次恢复局面到当前
-    int howManyPass = 0;
-    for (int p = 0; p < 2; p++) {
-      unsigned short player = whoInHistory[p];  // 是谁出的牌
-      auto playerAction = history[p];           // 出的哪些牌
-      set<Card> playedCards;
-      // 循环枚举这个人出的所有牌(本轮次)
-      for (unsigned _ = 0; _ < playerAction.size(); _++) {
-        Card card = playerAction[_].asInt();
-        playedCards.insert(card);  // 这里是出的一张牌
-        unknown[card_to_level(card)]--;
-      }
-      whatTheyPlayed[player].push_back(playedCards);  // 记录这段历史
-      cardRemaining[player] -= playerAction.size();   // 所有轮次的记录
-
-      // 在出牌一轮时，才寻找未接上的牌(未出 或 回应 炸弹/火箭)
-      Counter counter(playedCards);
-      Hand hand(counter);
-      if (i > 2 && (playedCards.empty() || hand == rocket ||
-                    (hand.length == 1 && hand.size == 4))) {
-        int outplayer[] = {(player - 2 + PLAYER_COUNT) % PLAYER_COUNT,
-                           (player - 1 + PLAYER_COUNT) % PLAYER_COUNT};
-        set<Card> lastValidCombo_;
-        for (short q = 1; q >= 0; q--) {
-          set<Card> playerAction = whatTheyPlayed[outplayer[q]].back();
-          if (!playerAction.empty()) {
-            lastValidCombo_ = playerAction;
-            break;
-          }
-        }
-        Counter counter(lastValidCombo_);
-        Hand hand(counter);
-        vector<unsigned short> v = {player, hand.length, hand.size,
-                                    hand.cosize};
-        // 实时更新(取level的最小值)
-        if (outplay.find(v) == outplay.end() || outplay[v] > hand.level)
-          outplay.insert(make_pair(v, hand.level));
-      }
-
-      if (playerAction.size() == 0)
-        howManyPass++;
-      else
-        lastValidCombo = playedCards;
+  // All Playing Requests
+  for (unsigned i = 1u; i < requests.size(); ++i) {
+    auto request = requests[i];
+    auto history = request["history"];
+    for (int position_in_history = 0; position_in_history < 2; position_in_history++) {
+      Group group = iterable_to_group(history[position_in_history]);
+      playing_history.push_back(group);
+      for (auto &card : group) --unobserved[card_to_level(card)];
+      unsigned position = history_layout[position_in_history];
+      remaining_cards[position] -= group.size();
     }
-
-    if (howManyPass == 2) lastValidCombo = set<Card>();
-
-    if (i < turn - 1) {
-      // 还要恢复自己曾经出过的牌
-      auto playerAction = input["responses"][i];  // 出的哪些牌
-      set<Card> playedCards;
-      for (unsigned _ = 0; _ < playerAction.size();
-           _++)  // 循环枚举自己出的所有牌
-      {
-        int card = playerAction[_].asInt();  // 这里是自己出的一张牌
-        myCards.erase(card);                 // 从自己手牌中删掉
-        playedCards.insert(card);
-      }
-      whatTheyPlayed[myPosition].push_back(playedCards);  // 记录这段历史
-      cardRemaining[myPosition] -= playerAction.size();
+    if (i != responses.size()) {
+      auto response = responses[i];
+      Group group = iterable_to_group(response);
+      playing_history.push_back(group);
     }
   }
 }

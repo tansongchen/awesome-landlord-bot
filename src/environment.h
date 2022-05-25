@@ -9,8 +9,6 @@
 
 using namespace std;
 
-constexpr int PLAYER_COUNT = 3;
-
 enum class Stage {
   BIDDING,  // 叫分阶段
   PLAYING   // 打牌阶段
@@ -18,31 +16,31 @@ enum class Stage {
 
 /* 状态 */
 
-// 我的牌有哪些
-extern set<Card> myCards;
-// 地主明示的牌有哪些
-extern set<Card> landlordPublicCards;
-// 大家从最开始到现在都出过什么
-extern vector<set<Card>> whatTheyPlayed[PLAYER_COUNT];
-// 当前要出的牌需要大过谁
-extern set<Card> lastValidCombo;
-// 大家还剩多少牌
-extern short cardRemaining[PLAYER_COUNT];
-// 我是几号玩家（0-地主，1-农民甲，2-农民乙）
-extern int myPosition;
-// 地主位置
-extern int landlordPosition;
-// 地主叫分
-extern int landlordBid;
 // 阶段
 extern Stage stage;
+// 我的牌有哪些
+extern Group own;
+// 地主明示的牌有哪些
+extern Group public_card;
+extern array<unsigned, playerCount> history_layout;
+// 大家从最开始到现在都出过什么
+extern vector<Group> playing_history;
 // 自己的第一回合收到的叫分决策
-extern vector<int> bidInput;
+extern vector<unsigned> bidding_history;
+// 当前要出的牌需要大过什么
+extern Hand last_hand;
+// 当前要出的牌需要大过谁
+extern unsigned last_player;
+// 大家还剩多少牌
+extern array<unsigned, playerCount> remaining_cards;
+// 我是几号玩家（0-地主，1-农民甲，2-农民乙）
+extern unsigned pos;
+// 地主位置
+extern unsigned landlord;
+// 地主叫分
+extern unsigned final_bid;
 // 剩余多少未知牌(删去自己所有初始牌，删去公共牌，删去对方的出牌)
-extern array<Count, maximumLevel> unknown;
-// player i cannot outplay d(i, t) if he only selects the same combination type
-// player, length, size, cosize -> min(level)
-extern map<vector<unsigned short>, Level> outplay;
+extern Counter unobserved;
 
 /* 输入输出 */
 

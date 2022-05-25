@@ -34,8 +34,8 @@ int main() {
   for (unsigned i = 0; i != 1000; ++i) {
     auto start = high_resolution_clock::now();
     random_shuffle(allCards.begin(), allCards.end());
-    Group myCards(allCards.begin(), allCards.begin() + 17);
-    Counter counter(myCards);
+    Group own(allCards.begin(), allCards.begin() + 17);
+    Counter counter(own);
     Pair pair = evaluate(&counter);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);

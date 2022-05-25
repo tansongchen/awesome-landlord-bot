@@ -44,11 +44,11 @@ Hand same_category_selector(Counter *counter, const Hand &last_hand) {
           for (const auto &combination : combinations(attachables, k)) {
             attached = combination;
             for (const auto &l : combination) (*counter)[l] -= cosize;
-            update(&best_pair, &best_hand, hand, counter);
+            updater(&best_pair, &best_hand, hand, counter);
             for (const auto &l : combination) (*counter)[l] += cosize;
           }
         } else {
-          update(&best_pair, &best_hand, hand, counter);
+          updater(&best_pair, &best_hand, hand, counter);
         }
         for (Level i = 0; i != length; ++i) (*counter)[level - i] += size;
       }

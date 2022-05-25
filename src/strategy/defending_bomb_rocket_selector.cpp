@@ -15,7 +15,7 @@ Hand defending_bomb_rocket_selector(Counter *counter, const Hand &last_hand) {
     for (level = 0; level != maximumLevel; ++level) {
       if ((*counter)[level] == size) {
         (*counter)[level] -= size;
-        update(&best_pair, &best_hand, hand, counter);
+        updater(&best_pair, &best_hand, hand, counter);
         (*counter)[level] += size;
       }
     }
@@ -24,7 +24,7 @@ Hand defending_bomb_rocket_selector(Counter *counter, const Hand &last_hand) {
   // find rocket
   if ((*counter)[blackJokerLevel] && (*counter)[redJokerLevel]) {
     (*counter)[blackJokerLevel] = (*counter)[blackJokerLevel] = 0;
-    update(&best_pair, &best_hand, rocket, counter);
+    updater(&best_pair, &best_hand, rocket, counter);
     (*counter)[blackJokerLevel] = (*counter)[blackJokerLevel] = 1;
   }
 
